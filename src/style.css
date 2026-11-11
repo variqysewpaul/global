@@ -349,13 +349,13 @@ ol {
   right: 0;
 }
 
-/* ---------------------------------------------------------------- hero: one clip of a property at night, scrubbed by scroll */
+/* ---------------------------------------------------------------- hero: a studio-lit 3D scene, its camera moved by scroll */
 main {
   position: relative;
 }
 .hero {
   position: relative;
-  height: 900vh;
+  height: 760vh; /* about 1.5 screens of scrolling between one product and the next, and a hold on the last */
   background: var(--ink);
 }
 .hero__pin {
@@ -365,7 +365,7 @@ main {
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  /* the poster (the clip's wide shot) is on screen before any frame has loaded, and is the whole hero in still mode */
+  /* the poster (the opening shot, drawn by the same scene) is on screen before the 3D has loaded, and is the whole hero in still mode */
   background: #04030a url('/poster.webp') 50% 50% / cover no-repeat;
 }
 #plate {
@@ -374,14 +374,15 @@ main {
   display: block;
   width: 100%;
   height: 100%;
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease); /* the live scene fades in over the poster, which shows the same frame */
 }
 #plate.is-ready {
-  visibility: visible;
+  opacity: 1;
 }
 
-/* a light touch over the footage: a faint vignette and a shade behind the copy, in a single layer. No colour cast, no grain,
-   no blend modes or blurs, so the footage stays sharp and the page stays cheap to composite while it scrubs. */
+/* a light touch over the scene: a faint vignette and a shade behind the copy, in a single layer. No colour cast, no grain,
+   no blend modes or blurs, so the picture stays sharp and the page stays cheap to composite while the scene draws under it. */
 .journey__shade {
   position: absolute;
   inset: 0;
@@ -449,7 +450,7 @@ main {
 .steps {
   position: absolute;
   right: var(--gutter);
-  top: 50%;
+  top: 62%; /* below the line the beams and screens sit on */
   translate: 0 -50%;
   display: grid;
   gap: 0.2rem;
@@ -522,7 +523,7 @@ main {
   }
 }
 
-/* still mode: reduced motion, low data, missing frames, no JS. The poster is the whole hero, no scroll-jacking. */
+/* still mode: reduced motion, low data, no usable graphics chip, no JS. The poster is the whole hero, no scroll-jacking. */
 .hero.hero--still {
   height: auto;
 }
@@ -541,14 +542,11 @@ main {
     display: none;
   }
 }
-.hero--still .hero__pin {
-  background-image: url('/poster-wide.webp');
-}
 @media (max-aspect-ratio: 1/1) {
-  /* tall or square windows: the whole 16:9 frame sits in the upper part of the screen, clear of the copy below */
+  /* tall or square windows: the portrait framing of the same shot, with the product in the upper part, clear of the copy below */
   .hero__pin {
-    background-size: 100% auto;
-    background-position: 0 17%;
+    background-image: url('/poster-tall.webp');
+    background-position: 50% 0;
   }
 }
 
@@ -1034,7 +1032,7 @@ main {
 }
 @media (max-width: 800px) {
   .hero {
-    height: 700vh;
+    height: 620vh;
   }
   .hero__copy {
     justify-content: flex-end;

@@ -13,6 +13,9 @@
       document.documentElement.classList.add('js');
     </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- the hero's opening frame (drawn by the 3D scene itself) is the first thing on screen, so start fetching it at once -->
+    <link rel="preload" as="image" href="/poster.webp" type="image/webp" media="(min-aspect-ratio: 1/1)" />
+    <link rel="preload" as="image" href="/poster-tall.webp" type="image/webp" media="(max-aspect-ratio: 1/1)" />
     <meta property="og:title" content="Global Security Solutions — 24-hour monitoring & armed response" />
     <meta property="og:description" content="Alarms, CCTV, gate automation and security hardware, with a control room that never switches off. Newcastle & the Amajuba District." />
     <meta property="og:type" content="website" />
@@ -39,7 +42,7 @@
     <noscript>
       <style>
         .hero { height: auto; min-height: 100svh; }
-        .hero__pin { position: relative; min-height: 100svh; background-image: url('/poster-wide.webp'); }
+        .hero__pin { position: relative; min-height: 100svh; background-image: url('/poster.webp'); background-size: cover; background-position: 50% 50%; }
         #plate, .chapter, .steps, .scroll-cue { display: none; }
         .reveal { opacity: 1 !important; transform: none !important; }
       </style>
@@ -139,7 +142,7 @@
     </header>
 
     <main id="main">
-      <!-- ============================== HERO + SERVICES: one clip of a property at night, scrubbed by scroll ============================== -->
+      <!-- ============================== HERO + SERVICES: a studio-lit 3D scene; scrolling moves the camera from product to product ============================== -->
       <section id="hero" class="hero" aria-labelledby="hero-title">
         <div class="hero__pin">
           <canvas id="plate" aria-hidden="true"></canvas>
@@ -161,26 +164,14 @@
           </div>
 
           <nav class="steps" aria-label="Services">
-            <button type="button" data-chapter="0"><span>Gates</span><i aria-hidden="true"></i></button>
-            <button type="button" data-chapter="1"><span>CCTV</span><i aria-hidden="true"></i></button>
+            <button type="button" data-chapter="0"><span>CCTV</span><i aria-hidden="true"></i></button>
+            <button type="button" data-chapter="1"><span>Gates</span><i aria-hidden="true"></i></button>
             <button type="button" data-chapter="2"><span>Sensors &amp; beams</span><i aria-hidden="true"></i></button>
             <button type="button" data-chapter="3"><span>Control room</span><i aria-hidden="true"></i></button>
           </nav>
 
-          <article class="chapter" aria-labelledby="ch-gate">
-            <p class="eyebrow">01 · Gate &amp; access automation</p>
-            <h2 id="ch-gate" class="title">Gates that work <em>every time you need them.</em></h2>
-            <p class="lede">We install and automate gate motors and fit physical barrier access control for driveways, complexes and commercial sites.</p>
-            <ul class="checks">
-              <li>Gate motor installation</li>
-              <li>Gate automation</li>
-              <li>Physical barrier access control</li>
-            </ul>
-            <div class="cta-row"><a class="btn btn--pink" href="#contact" data-interest="Gate automation">Enquire about gates</a></div>
-          </article>
-
           <article class="chapter" aria-labelledby="ch-cctv">
-            <p class="eyebrow">02 · CCTV &amp; surveillance</p>
+            <p class="eyebrow">01 · CCTV &amp; surveillance</p>
             <h2 id="ch-cctv" class="title">See what’s happening, <em>day or night.</em></h2>
             <p class="lede">We supply and install closed-circuit television systems and surveillance hardware for homes, shops and sites.</p>
             <ul class="checks">
@@ -189,6 +180,18 @@
               <li>Residential and commercial properties</li>
             </ul>
             <div class="cta-row"><a class="btn btn--pink" href="#contact" data-interest="CCTV">Enquire about CCTV</a></div>
+          </article>
+
+          <article class="chapter" aria-labelledby="ch-gate">
+            <p class="eyebrow">02 · Gate &amp; access automation</p>
+            <h2 id="ch-gate" class="title">Gates that work <em>every time you need them.</em></h2>
+            <p class="lede">We install and automate gate motors and fit physical barrier access control for driveways, complexes and commercial sites.</p>
+            <ul class="checks">
+              <li>Gate motor installation</li>
+              <li>Gate automation</li>
+              <li>Physical barrier access control</li>
+            </ul>
+            <div class="cta-row"><a class="btn btn--pink" href="#contact" data-interest="Gate automation">Enquire about gates</a></div>
           </article>
 
           <article class="chapter" aria-labelledby="ch-beam">
@@ -219,9 +222,9 @@
           </article>
 
           <p class="sr-only">
-            Background footage: a slow camera move around a modern house at night. It pushes in on a gate motor with a violet light strip,
-            a wall-mounted CCTV camera and a dome camera with infrared lights, then violet alarm beams switch on across a window and the
-            camera pulls back to show the whole house.
+            Background scene: a dark studio where the camera moves from product to product as you scroll. A wall-mounted CCTV camera with
+            infrared lights, a gate motor with a violet light strip, a pair of beam sensors with violet alarm beams between them, and a wall
+            of control-room monitors showing camera feeds.
           </p>
           <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
         </div>

@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- Development page for the 3D studio scene (not part of the production build). Open /dev3d.html -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D studio · dev</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #07060b; color: #cfc8e0; font: 14px system-ui, sans-serif; }
+      canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+      #msg { position: fixed; left: 12px; bottom: 10px; z-index: 2; }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="msg">building…</div>
+    <script type="module">
+      import { fast3DContext } from '/src/scene/kit.js';
+      import { SecurityScene } from '/src/scene/SecurityScene.js';
+      const canvas = document.getElementById('c');
+      const msg = document.getElementById('msg');
+      const params = new URLSearchParams(location.search);
+      // ?software lets the scene draw even where the browser would use software rendering (slow, for checking pictures only)
+      const gl = fast3DContext(canvas) ?? (params.has('software') ? canvas.getContext('webgl2', { antialias: true }) : null);
+      if (!gl) {
+        msg.textContent = 'no hardware 3D here (add ?software to draw anyway)';
+        window.__scene = null;
+      } else {
+        const scene = new SecurityScene(canvas, false, gl);
+        window.__scene = scene;
+        scene.onProgress = (p) => (msg.textContent = 'building… ' + Math.round(p * 100) + '%');
+        scene.ready.then(() => {
+          msg.textContent = 'ready';
+          window.__ready = true;
+          scene.start();
+        });
+      }
+    </script>
+  </body>
+</html>

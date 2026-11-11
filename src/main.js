@@ -7,7 +7,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { initFilm } from './film.js';
+import { initHero3D } from './hero3d.js';
 import { initUI } from './ui.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,17 +16,17 @@ history.scrollRestoration = 'manual';
 async function boot() {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Lenis smooths the scroll; GSAP's ticker is the single clock for Lenis, ScrollTrigger and the hero footage.
+  // Lenis smooths the scroll; GSAP's ticker is the single clock for Lenis and ScrollTrigger, and the 3D scene keeps its own frame loop.
   const lenis = new Lenis({ lerp: reduced ? 1 : 0.12, wheelMultiplier: 0.95, smoothWheel: !reduced });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
-  const film = initFilm({ reduced, lenis });
+  const hero = initHero3D({ reduced, lenis });
   initUI({ lenis, reduced });
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
-  window.__gss = { lenis, film, gsap, ScrollTrigger }; // handy for tuning in the console
+  window.__gss = { lenis, hero, gsap, ScrollTrigger }; // handy for tuning in the console
 }
 
 boot().catch((err) => {

@@ -25,3 +25,6 @@ archive/**/*.png
 archive/**/*.jpg
 archive/**/*.mp4
 archive/**/manifest.json
+
+# development render snapshots
+.snaps/
