@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { initHero3D } from './hero3d.js';
 import { initUI } from './ui.js';
+import { initMotion } from './motion.js';
 
 gsap.registerPlugin(ScrollTrigger);
 history.scrollRestoration = 'manual';
@@ -24,6 +25,7 @@ async function boot() {
 
   const hero = initHero3D({ reduced, lenis });
   initUI({ lenis, reduced });
+  initMotion({ lenis, reduced });
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
   window.__gss = { lenis, hero, gsap, ScrollTrigger }; // handy for tuning in the console

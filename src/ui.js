@@ -39,13 +39,9 @@ export function initUI({ lenis, reduced }) {
       gsap.to(els, { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.8, ease: 'power2.out', stagger: reduced ? 0 : 0.08, overwrite: true }),
   });
 
-  /* ---------------------------------------------------------------- light and transitions: moving glows, wiped headings, a process line that fills */
+  /* ---------------------------------------------------------------- light and transitions: a process line that fills (headings and the rest of the motion are in motion.js) */
   if (!reduced) {
     // (the glows in the dark sections are static: tweening a CSS variable that feeds a big gradient repaints it on every scroll frame)
-    $$('.section__head .title').forEach((t) => {
-      t.classList.add('title-wipe');
-      gsap.fromTo(t, { clipPath: 'inset(0 0 100% 0)', y: 28 }, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: t, start: 'top 88%', once: true } });
-    });
     // the process line fills once as each step comes into view (no per-scroll work)
     $$('.process li').forEach((li, i) => gsap.to(li, { '--fill': 1, duration: 0.9, delay: i * 0.12, ease: 'power2.out', scrollTrigger: { trigger: li, start: 'top 88%', once: true } }));
   }

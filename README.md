@@ -33,9 +33,13 @@ There are no video frames, models or textures to download: the scene is generate
    A stepper on the right (pills at the top on phones) jumps between stations, and each chapter's button pre-selects that option in the
    enquiry form.
 2. **Key points** strip.
-3. **Armed response & control room** (dark): four steps (signal, operator, dispatch, on site) and a call to action.
-4. **Services** (light): alarms, gates, CCTV, hardware. Each card lists what's included and has an "Enquire" link.
-5. **About** (grey), **Coverage** (Google Maps loads only when the visitor clicks "Show map"), **FAQ** (native `<details>`), **Contact** (the form opens the visitor's email app), footer.
+3. **Our approach** (grey): a large statement whose words light up as you scroll through it, and three numbered values (always on, always on the way, done properly).
+4. **Armed response & control room** (dark): four steps (signal, operator, dispatch, on site) and a call to action, with rings spreading out behind it.
+5. **Services** (light): numbered rows (alarms, gates, CCTV, hardware), each listing what's included with an "Enquire" link.
+6. **Promise marquee**: a line of large type ("Always on. Always listening. Always on the way.") that drifts and leans into the scroll direction.
+7. **About** (grey), **Coverage** (Google Maps loads only when the visitor clicks "Show map"), **FAQ** (native `<details>`), **Contact** (the form opens the visitor's email app), footer.
+
+The structure and motion of the lower page borrow from armadillo-gs.com (numbered sections, a values marquee, masked headline reveals); the wording is our own, written only from the information the client supplied. The motion lives in `src/motion.js`: headlines (each word rises out of its own mask), the scroll-lit statement, numbered rows (a hairline draws across, then the content rises in), the rings, the marquee, and a ring that follows the pointer on fine pointers. All transform/opacity only; with reduced motion none of it runs and the content is simply there.
 
 ## The hero scene
 
