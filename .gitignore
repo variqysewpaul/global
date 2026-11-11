@@ -1,0 +1,27 @@
+# dependencies and build output
+node_modules/
+dist/
+.vite/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.log
+.claude/settings.local.json
+
+# Large or private working material, kept locally and not published:
+# only the clip the site is built from stays in ai-brief/source; the other source clips, the guide stills and the
+# client's reference photos are left out.
+ai-brief/source/*
+!ai-brief/source/walkthrough-v2.mp4
+ai-brief/previs/
+ai-brief/reference/
+ai-brief/**/*.png
+
+# frames and images of the archived versions (the code is kept; frames can be regenerated from the source clips with
+# scripts/make-frames.mjs)
+archive/**/*.webp
+archive/**/*.png
+archive/**/*.jpg
+archive/**/*.mp4
+archive/**/manifest.json

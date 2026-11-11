@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 6 120 158" color="#231f20" role="img" aria-label="Global Security Solutions — 24 Hour Monitoring And Response">
+    <mask id="g1" maskUnits="userSpaceOnUse" x="0" y="0" width="150" height="130">
+      <rect x="0" y="0" width="150" height="130" fill="#fff"/>
+      <g fill="none" stroke="#000" stroke-width="4.6" stroke-linecap="round">
+    <path d="M70 8V116"/>
+    <ellipse cx="70" cy="62" rx="20.8" ry="53"/>
+    <ellipse cx="70" cy="62" rx="39.52" ry="53"/>
+    <path d="M27.2 29.76Q70 44.76 112.8 29.76M17.05 51.6Q70 66.6 122.95 51.6M17.27 73.44Q70 88.44 122.73 73.44M25.64 92.16Q70 107.16 114.36 92.16"/>
+      </g>
+    </mask>
+    <circle cx="70" cy="62" r="52" fill="#e0368c" mask="url(#g1)"/>
+    <g fill="currentColor">
+      <path d="M72.5 107.5L84.5 105.5L88.5 112L92 130L83 131.5L77 121Z"/>
+      <circle cx="76.5" cy="101.5" r="5.2"/>
+    </g>
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M73.5 108L65.5 97" stroke-width="5.6"/>
+      <path d="M85 107L101.5 103.5" stroke-width="5.6"/>
+      <path d="M89 129L109.5 126.5L107 146" stroke-width="8"/>
+      <path d="M107 146L113.5 147.5" stroke-width="4.4"/>
+      <path d="M86 132L66.5 142L45.5 158" stroke-width="7"/>
+    </g>
+</svg>

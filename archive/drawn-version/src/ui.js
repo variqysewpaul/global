@@ -1,0 +1,99 @@
+// Everything below the hero: navigation, subtle reveals, enquiry pre-selection, click-to-load map, contact form.
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+export function initUI({ lenis, reduced }) {
+  /* ---------------------------------------------------------------- navigation (smooth scroll + keyboard focus) */
+  $$('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      const target = id.length > 1 ? $(id) : null;
+      if (!target) return;
+      e.preventDefault();
+      // "Enquire about …" links pre-select the matching option in the enquiry form
+      if (a.dataset.interest) {
+        const sel = $('#interest');
+        if (sel) sel.value = a.dataset.interest;
+      }
+      lenis.scrollTo(target, {
+        duration: reduced ? 0.01 : 1.4,
+        easing: (t) => 1 - Math.pow(1 - t, 4),
+        offset: -72,
+        onComplete: () => target.focus?.({ preventScroll: true }),
+      });
+    });
+  });
+
+  const header = $('.site-header');
+  lenis.on('scroll', ({ scroll }) => header.classList.toggle('is-solid', scroll > 24));
+  header.classList.toggle('is-solid', window.scrollY > 24);
+
+  /* ---------------------------------------------------------------- reveals: a short fade-up, nothing more */
+  ScrollTrigger.batch('.reveal', {
+    start: 'top 90%',
+    once: true,
+    onEnter: (els) =>
+      gsap.to(els, { opacity: 1, y: 0, duration: reduced ? 0.01 : 0.8, ease: 'power2.out', stagger: reduced ? 0 : 0.08, overwrite: true }),
+  });
+
+  /* ---------------------------------------------------------------- light and transitions: moving glows, wiped headings, a process line that fills */
+  if (!reduced) {
+    $$('.section--dark').forEach((s) =>
+      gsap.fromTo(s, { '--glow': '-14%' }, { '--glow': '14%', ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } }),
+    );
+    $$('.section__head .title').forEach((t) => {
+      t.classList.add('title-wipe');
+      gsap.fromTo(t, { clipPath: 'inset(0 0 100% 0)', y: 28 }, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: t, start: 'top 88%', once: true } });
+    });
+    $$('.process li').forEach((li) => gsap.to(li, { '--fill': 1, ease: 'none', scrollTrigger: { trigger: li, start: 'top 88%', end: 'top 55%', scrub: true } }));
+  }
+
+  /* ---------------------------------------------------------------- map: loads from Google only when asked */
+  {
+    const btn = $('#map-load');
+    const card = $('#map-card');
+    const body = $('#map-body');
+    btn?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.title = 'Map showing Global Security Solutions, 89 Scott Street, Newcastle Central';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.src = 'https://maps.google.com/maps?q=' + encodeURIComponent('Global Security Solutions, 89 Scott Street, Newcastle, 2940') + '&output=embed';
+      card.appendChild(f);
+      body.hidden = true;
+    });
+  }
+
+  /* ---------------------------------------------------------------- contact form (opens the visitor's email app) */
+  {
+    const form = $('#enquiry');
+    const note = $('#form-note');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData(form));
+      let first = null;
+      for (const n of ['name', 'phone']) {
+        const el = form.elements[n];
+        const bad = !String(d[n] || '').trim();
+        el.classList.toggle('invalid', bad);
+        el.setAttribute('aria-invalid', String(bad));
+        if (bad && !first) first = el;
+      }
+      if (first) {
+        note.textContent = 'Please add your name and a phone number so we can call you back.';
+        first.focus();
+        return;
+      }
+      const subject = `Website enquiry — ${d.interest}`;
+      const body = `Name: ${d.name}\nPhone: ${d.phone}\nInterested in: ${d.interest}\n\n${d.message || ''}`;
+      note.textContent = 'Opening your email app…';
+      window.location.href = `mailto:globalsecurity@telkomsa.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+
+  const yr = $('#year');
+  if (yr) yr.textContent = new Date().getFullYear();
+}
