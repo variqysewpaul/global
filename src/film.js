@@ -50,7 +50,10 @@ export function initFilm({ reduced, lenis }) {
   const intro = hero.querySelector('#hero-a');
   const chapters = [...hero.querySelectorAll('.chapter')];
   const stepBtns = [...hero.querySelectorAll('.steps button')];
-  const small = matchMedia('(max-width: 800px)').matches;
+  // The full-resolution frames suit any screen that will draw more than 800 device pixels of width, phones included (frames are
+  // decoded at drawn size there). The small set is for tiny or slow-connection devices.
+  const devicePx = innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+  const small = devicePx <= 800 || /(^|-)3g$/.test(conn.effectiveType || '');
   const cam = { t: 0 };
   let seq = null;
   let active = -1;

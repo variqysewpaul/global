@@ -35,21 +35,28 @@ npm run build    # static site in dist/  (JS ≈ 142 KB, 54 KB gzipped, plus the
 
 | Frames | Source | Used for |
 |---|---|---|
-| `public/frames/film`: 240 frames (every frame of the clip, 24 fps), 1280 px, webp quality 88, 7.9 MB | `ai-brief/source/walkthrough-v2.mp4` | the hero on desktop and tablets |
-| `public/frames/film-sm`: the same 240 frames at 720 px, quality 84, 3.7 MB | the same clip | the hero on screens 800 px wide or less |
+| `public/frames/film`: 240 frames (every frame of the clip, 24 fps), 1280 px, webp quality 88, 7.9 MB | `ai-brief/source/walkthrough-v2.mp4` | the hero on every screen except tiny ones |
+| `public/frames/film-sm`: the same 240 frames at 720 px, quality 84, 3.7 MB | the same clip | the hero on tiny screens (800 device pixels wide or less) and 3G connections |
 | `public/poster.webp` (first frame) and `public/poster-wide.webp` (last frame) | the same clip | the first frame is on screen before anything loads; the wide shot is the whole hero in still mode |
 
 How the frames are played (`src/sequence.js`):
 
-- Every frame is downloaded once and kept compressed. Downloads start with a coarse skeleton (every 12th frame), then fill in nearest the
+- **Crisp at rest, smooth in motion.** The player always rests on one real frame, never on a blend of two (a blend that follows the scroll
+  position leaves a permanent double image whenever the scroll stops between frames). When the scroll moves on to another frame, the old frame
+  dissolves into the new one over about the time since the last change (16–100 ms): slow scrolling gives gentle dissolves, so motion glides;
+  fast scrolling gives near-instant swaps, so frames stay sharp; stopping always ends on a single sharp frame within a tenth of a second.
+  A small hysteresis stops the frame flickering when the scroll sits on the boundary between two frames.
+- Every frame is downloaded once and kept compressed. Downloads start with a coarse skeleton (every 24th frame), then fill in nearest the
   playhead, so scrubbing works long before every frame has arrived and a jump to another chapter loads that part first.
-- Only the frames around the playhead are decoded (three at a time, nearest first, in the direction of travel), so memory stays small, stale
-  work never blocks the frame that is needed now, and the full-resolution set can be used on any device.
-- Every frame of the clip is used at its original 24 fps. Between two frames the player cross-fades by the fractional scroll position
-  (each real frame is held crisp at both ends), so a slow scroll glides instead of stepping at 24 fps.
-- Nothing expensive sits over the footage: the page has one light shade layer and no blend modes, blurred backdrops or filters, and the canvas
-  backing store is capped at 1920 px wide (the clip is 1280 px, so more pixels add GPU work, not detail).
-- `__gss.film.seq.stats` in the browser console shows how many draws used the exact frame, a stand-in frame, or a blend.
+- Only the frames around the playhead are decoded (three at a time, nearest first, in the direction of travel), so memory stays small and
+  stale work never blocks the frame that is needed now. On small screens frames are decoded at the size they are drawn.
+- The full-resolution set is used on every screen that draws more than 800 device pixels of width (phones included); the small set is for tiny
+  screens and 3G connections. Frames are drawn with high-quality scaling, and the canvas is capped at 1920 px wide (the clip is 1280 px, so more
+  pixels add GPU work, not detail).
+- Nothing expensive sits over the footage or runs on every scroll frame: one light shade layer (removed on tall or square windows, where the copy
+  sits below the picture), no blend modes, blurred backdrops or filters, and no scroll-driven repainting of the glows further down the page.
+- `__gss.film.seq.stats` and `__gss.film.seq.state()` in the browser console show how many draws used the exact frame, a stand-in or a
+  dissolve, and whether the player is resting on one frame.
 - On tall or square windows (width < height) the whole 16:9 frame fits the width in the upper part of the screen, with the copy below, instead
   of cropping it to a sliver. On wide windows it fills the screen.
 

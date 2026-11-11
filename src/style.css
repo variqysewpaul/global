@@ -386,7 +386,13 @@ main {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(130% 100% at 50% 46%, rgba(7, 6, 11, 0) 62%, rgba(7, 6, 11, 0.34) 100%), linear-gradient(90deg, rgba(7, 6, 11, 0.5) 0%, rgba(7, 6, 11, 0.2) 30%, rgba(7, 6, 11, 0) 52%), linear-gradient(0deg, rgba(7, 6, 11, 0.72) 0%, rgba(7, 6, 11, 0.3) 20%, rgba(7, 6, 11, 0) 40%);
+  background: radial-gradient(130% 100% at 50% 46%, rgba(7, 6, 11, 0) 62%, rgba(7, 6, 11, 0.28) 100%), linear-gradient(90deg, rgba(7, 6, 11, 0.44) 0%, rgba(7, 6, 11, 0.16) 30%, rgba(7, 6, 11, 0) 50%), linear-gradient(0deg, rgba(7, 6, 11, 0.64) 0%, rgba(7, 6, 11, 0.26) 20%, rgba(7, 6, 11, 0) 38%);
+}
+@media (max-aspect-ratio: 1/1) {
+  /* tall or square windows: the copy sits below the picture, so nothing needs shading and the picture stays clear */
+  .journey__shade {
+    display: none;
+  }
 }
 
 /* copy */

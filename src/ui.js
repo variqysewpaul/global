@@ -41,14 +41,13 @@ export function initUI({ lenis, reduced }) {
 
   /* ---------------------------------------------------------------- light and transitions: moving glows, wiped headings, a process line that fills */
   if (!reduced) {
-    $$('.section--dark').forEach((s) =>
-      gsap.fromTo(s, { '--glow': '-14%' }, { '--glow': '14%', ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } }),
-    );
+    // (the glows in the dark sections are static: tweening a CSS variable that feeds a big gradient repaints it on every scroll frame)
     $$('.section__head .title').forEach((t) => {
       t.classList.add('title-wipe');
       gsap.fromTo(t, { clipPath: 'inset(0 0 100% 0)', y: 28 }, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: t, start: 'top 88%', once: true } });
     });
-    $$('.process li').forEach((li) => gsap.to(li, { '--fill': 1, ease: 'none', scrollTrigger: { trigger: li, start: 'top 88%', end: 'top 55%', scrub: true } }));
+    // the process line fills once as each step comes into view (no per-scroll work)
+    $$('.process li').forEach((li, i) => gsap.to(li, { '--fill': 1, duration: 0.9, delay: i * 0.12, ease: 'power2.out', scrollTrigger: { trigger: li, start: 'top 88%', once: true } }));
   }
 
   /* ---------------------------------------------------------------- map: loads from Google only when asked */

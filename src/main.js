@@ -17,7 +17,7 @@ async function boot() {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Lenis smooths the scroll; GSAP's ticker is the single clock for Lenis, ScrollTrigger and the hero footage.
-  const lenis = new Lenis({ lerp: reduced ? 1 : 0.085, wheelMultiplier: 0.95, smoothWheel: !reduced });
+  const lenis = new Lenis({ lerp: reduced ? 1 : 0.12, wheelMultiplier: 0.95, smoothWheel: !reduced });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
