@@ -275,5 +275,5 @@ export function createRenderer(canvas, context, lowPower) {
   renderer.shadowMap.type = THREE.VSMShadowMap;
   renderer.shadowMap.autoUpdate = false;
   renderer.shadowMap.needsUpdate = true;
-  return { renderer, maxPixelRatio: Math.min(window.devicePixelRatio || 1, lowPower ? 1.5 : 1.75) };
+  return { renderer, maxPixelRatio: Math.min(window.devicePixelRatio || 1, lowPower ? 1.25 : 1.75) };
 }

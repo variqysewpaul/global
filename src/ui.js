@@ -27,6 +27,30 @@ export function initUI({ lenis, reduced }) {
     });
   });
 
+  /* ---------------------------------------------------------------- menu (phones and tablets) */
+  const menu = $('#menu');
+  const menuBtn = $('.menu-btn');
+  const setMenu = (open) => {
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+    menu.classList.toggle('is-open', open);
+    menu.inert = !open;
+    for (const el of [$('main'), $('.footer')]) if (el) el.inert = open;
+    document.querySelector('.site-header').classList.toggle('menu-open', open);
+    if (open) lenis.stop();
+    else lenis.start();
+  };
+  menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
+  // capture: close (and let the page scroll again) before the link's own smooth-scroll handler runs
+  menu.addEventListener('click', (e) => e.target.closest('a') && setMenu(false), true);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+      setMenu(false);
+      menuBtn.focus();
+    }
+  });
+  matchMedia('(min-width: 1101px)').addEventListener('change', (e) => e.matches && setMenu(false));
+
   const header = $('.site-header');
   lenis.on('scroll', ({ scroll }) => header.classList.toggle('is-solid', scroll > 24));
   header.classList.toggle('is-solid', window.scrollY > 24);

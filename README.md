@@ -99,6 +99,13 @@ mid-visit the poster comes back until it recovers.
   Needs ffmpeg (winget package `Gyan.FFmpeg`). The posters are drawn by the scene itself, so the live scene fades in over an identical frame.
 - Handy in the browser console: `__gss.hero.scene` (the scene), `__gss.lenis.stop()` before testing so a stray wheel event does not move the page.
 
+## Phones
+
+- **Menu:** the header links are hidden below 1100 px, so a round menu button opens a full-screen menu (`#menu`; the page behind it is `inert`, Escape closes it, choosing a link closes it and scrolls). Below 440 px the header's call button is round and icon-only; the number is in the hero and the menu.
+- **Hero:** the four stations sit on one row of pills (the active one filled). On short phones (under 760 px high) the intro paragraph is dropped so the product stays visible; under 600 px the chapter paragraphs go too. Landscape phones (under 520 px high) get a compact layout. Safe-area insets are respected.
+- **3D on phones** (a coarse pointer, a narrow screen or 4 cores or fewer): pixel ratio capped at 1.25 and allowed to fall to 0.75 if frames run long; the mirror is smaller and redraws every other frame; the scene is only fetched once the page has loaded and the browser is idle, so the poster, copy and first scroll are never competing with it. Devices with 2 cores or 2 GB of memory or less get the poster instead.
+- Touch targets are at least 44 px; the canvas follows its own box, so the address bar sliding away does not resize it.
+
 ## Accessibility
 
 - Reduced motion, Save-Data, a 2G connection, no usable graphics chip or a failed build (force with `/?still`): the hero is the still poster with the same headline and calls to action. No 3D code is downloaded.

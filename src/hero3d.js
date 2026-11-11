@@ -28,7 +28,9 @@ export function initHero3D({ reduced, lenis }) {
 
   const conn = navigator.connection || {};
   const lowData = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
-  const still = reduced || lowData || new URLSearchParams(location.search).has('still');
+  // very small devices (2 cores or less, 2 GB of memory or less) get the poster: the scene would not run well enough to be worth it
+  const weak = (navigator.hardwareConcurrency ?? 8) <= 2 || (navigator.deviceMemory ?? 8) <= 2;
+  const still = reduced || lowData || weak || new URLSearchParams(location.search).has('still');
   const canvas = document.getElementById('plate');
   const gl = still ? null : fast3DContext(canvas);
   if (!gl) {
@@ -36,7 +38,7 @@ export function initHero3D({ reduced, lenis }) {
     return api;
   }
 
-  const lowPower = matchMedia('(max-width: 820px)').matches || (navigator.hardwareConcurrency ?? 8) <= 4;
+  const lowPower = matchMedia('(max-width: 820px), (pointer: coarse)').matches || (navigator.hardwareConcurrency ?? 8) <= 4;
   const intro = hero.querySelector('#hero-a');
   const chapters = [...hero.querySelectorAll('.chapter')];
   const stepBtns = [...hero.querySelectorAll('.steps button')];
@@ -103,26 +105,39 @@ export function initHero3D({ reduced, lenis }) {
     tl.kill();
     gsap.set([intro, '.scroll-cue'], { clearProps: 'all' });
   };
-  import('./scene/SecurityScene.js')
-    .then(async ({ SecurityScene }) => {
-      scene = new SecurityScene(canvas, lowPower, gl);
-      api.scene = scene;
-      scene.setProgress(toTime(progress));
-      await scene.ready;
-      scene.start();
-      canvas.classList.add('is-ready');
-    })
-    .catch((err) => {
-      console.error(err);
-      fallBack();
-    });
+  let inView = true;
+  const load = () =>
+    import('./scene/SecurityScene.js')
+      .then(async ({ SecurityScene }) => {
+        scene = new SecurityScene(canvas, lowPower, gl);
+        api.scene = scene;
+        scene.setProgress(toTime(progress));
+        scene.setCovered(!inView);
+        await scene.ready;
+        scene.start();
+        canvas.classList.add('is-ready');
+      })
+      .catch((err) => {
+        console.error(err);
+        fallBack();
+      });
+  // On phones the 3D waits until the page itself has loaded and the browser is idle, so it never competes with first paint and
+  // the first scroll; the poster is on screen meanwhile.
+  if (lowPower) {
+    const later = () => ('requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 2500 }) : setTimeout(load, 800));
+    if (document.readyState === 'complete') later();
+    else addEventListener('load', later, { once: true });
+  } else load();
 
   // if the graphics driver drops the context, show the poster again until it is back
   canvas.addEventListener('webglcontextlost', () => canvas.classList.remove('is-ready'));
   canvas.addEventListener('webglcontextrestored', () => canvas.classList.add('is-ready'));
 
   // no drawing while the hero is off screen
-  new IntersectionObserver(([e]) => scene?.setCovered(!e.isIntersecting), { threshold: 0 }).observe(hero);
+  new IntersectionObserver(([e]) => {
+    inView = e.isIntersecting;
+    scene?.setCovered(!inView);
+  }, { threshold: 0 }).observe(hero);
 
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
     window.addEventListener('pointermove', (e) => scene?.setPointer((e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1)), { passive: true });

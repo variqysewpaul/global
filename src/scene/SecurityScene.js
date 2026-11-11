@@ -246,8 +246,9 @@ export class SecurityScene {
     const avg = this.frameTime / this.frameCount;
     this.frameTime = 0;
     this.frameCount = 0;
-    if (avg > 1 / 45 && this.pixelRatio > 1) {
-      this.pixelRatio = Math.max(1, this.pixelRatio - 0.25);
+    const minRatio = this.lowPower ? 0.75 : 1; // phones may go below 1 rather than stutter
+    if (avg > 1 / 45 && this.pixelRatio > minRatio) {
+      this.pixelRatio = Math.max(minRatio, this.pixelRatio - 0.25);
       this.resize();
     } else if (avg < 1 / 75 && this.pixelRatio < this.maxPixelRatio) {
       this.pixelRatio = Math.min(this.maxPixelRatio, this.pixelRatio + 0.25);
