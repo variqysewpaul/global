@@ -14,8 +14,10 @@ import { initHero3D } from './hero3d.js';
 import { initUI } from './ui.js';
 import { initMotion } from './motion.js';
 import { initVideos } from './video.js';
+import { initCurtain } from './curtain.js';
 
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true }); // the address bar sliding away on a phone is not a resize
 history.scrollRestoration = 'manual';
 
 async function boot() {
@@ -27,16 +29,24 @@ async function boot() {
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
-  const hero = initHero3D({ reduced, lenis });
+  // the curtain goes up first and locks the scroll; it waits for the fonts, the opening picture and (on big screens) the 3D scene
+  let hero;
+  const loaded = initCurtain({ lenis, reduced, progress: () => (hero ? hero.progress() : 0) });
+
+  hero = initHero3D({ reduced, lenis });
   initUI({ lenis, reduced });
   initMotion({ reduced });
   initVideos({ reduced });
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  loaded.then(() => ScrollTrigger.refresh());
   window.__gss = { lenis, hero, gsap, ScrollTrigger }; // handy for tuning in the console
 }
 
 boot().catch((err) => {
   console.error(err);
   document.getElementById('hero')?.classList.add('hero--still');
+  document.documentElement.classList.remove('is-loading');
+  document.documentElement.classList.add('is-loaded');
+  document.getElementById('curtain')?.classList.add('is-hide');
 });

@@ -8,7 +8,7 @@ npm run dev      # http://localhost:5173   (the 3D scene on its own: http://loca
 npm run build    # static site in dist/
 ```
 
-Build size: the page's own JavaScript is about 140 KB (53 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
+Build size: the page's own JavaScript is about 145 KB (54 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
 about 557 KB (144 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
 The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 1.1–1.2 MB each; about a quarter of that on phones) that are only fetched when they come on screen.
 
@@ -45,6 +45,22 @@ The hero needs no video or models: the scene is generated in code (the two poste
 The **menu** (the button at the top right, on every screen size) opens a full-screen list of the sections. On wide screens, **ticks** at the
 left edge show where you are (they appear after the hero); hovering them reveals the section names.
 
+### Loading curtain and entrance (`src/curtain.js`, `src/sections.css`)
+
+After armadillo-gs.com, whose loader fills a logo silhouette and then lifts. Ours covers the page with near-black and the logo mark (the globe and figure) in the
+middle. The mark is uncovered from the top down as the page really loads (fonts, the hero's opening picture, and the 3D scene where it is built up front), then it
+rises and fades (1 s), the curtain fades (0.45 s) and `is-loaded` goes on `<html>`. The scroll is locked behind it.
+
+- **Timing:** at least 1.7 s on a first visit (so the fill can be seen), 0.9 s on repeat visits in the same session (`sessionStorage` key `gss-seen`) and 0.4 s with
+  reduced motion. Loading is waited for up to 3.2 s, after which the opening picture (the same frame as the 3D scene's first) stands in and the scene fades in over it;
+  nothing holds the curtain longer than 5 s. A small inline script in `index.html` is a last failsafe at 12 s, and the page's catch handler lifts it too. Without
+  JavaScript there is no curtain. `performance.getEntriesByName('curtain-lifted')` gives the time it lifted.
+- **Entrance** (all waits for `is-loaded`, `cubic-bezier(.33, 1, .68, 1)`, the example's easing): the header's logo, then its menu button, drop in one after
+  another (0.45 s each); the hero headline's words rise a long way while skewing flat (1.6 s, a line at a time); then the eyebrow, buttons, stepper and scroll cue fade up.
+- **Header:** once the page is scrolled, the full wordmark fades down and only the small mark stays (as the example swaps its logo); it returns at the top.
+- **Pointer ring:** over the hero it says "Scroll" until you have scrolled.
+- **Rings, glows and the two videos** fade in (and the videos settle from a touch smaller) as they arrive; the ticks slide in from the left.
+
 ### How the lower page moves (`src/motion.js`, `src/video.js`, `src/sections.css`)
 
 - **Line-by-line text:** each heading and paragraph is split into words, each word is given its line number, and when the block scrolls into
@@ -52,6 +68,8 @@ left edge show where you are (they appear after the hero); hovering them reveals
   numbers are re-measured when the window is resized. Numbered rows, services and groups rise in as they arrive.
 - **Parallax:** the two videos drift slowly against the scroll.
 - **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a "View" label over the "who we work for" list.
+- **Nothing is left hidden:** once scrolling stops, any text, row or picture at or above the bottom of the screen is shown, however it got there (a jump from
+  the menu, a fast fling, a resize), so a reveal that was missed cannot leave text out of sight.
 - All of it is transform or opacity. With reduced motion nothing is split or animated and the content is simply there.
 
 ## The hero scene
@@ -132,6 +150,9 @@ mid-visit the poster comes back until it recovers.
 
 - Reduced motion, Save-Data, a 2G connection, no usable graphics chip or a failed build (force with `/?still`): the hero is the still poster with the same headline and calls to action. No 3D code is downloaded.
 - Skip link jumps past the hero and moves keyboard focus to the next section; in-page links move focus to their target.
+- **Legibility:** small text is at least 14 px and body text at least 16 px (they scale up with the screen); an automated check of every text element below the hero
+  against WCAG AA passes (white on the pink is 4.75:1, the large "Contact" title is 4.25:1 against 3:1 needed). Over the busy monitor wall the hero adds a darker shade
+  behind the copy and the stepper, and all hero text has a soft shadow.
 - One `h1`, logical headings, labelled regions and form fields, visible focus rings, `lang="en-ZA"`. The canvas is `aria-hidden` with a text description. The stepper is real buttons with `aria-current`. Hidden chapters are not focusable.
 - Contrast: an automated pass over every text element below the hero found no failures against WCAG AA (run on an earlier version). The hero copy sits over the scene with a light shade behind it and should be re-checked.
 - The videos are decoration: muted, no controls, hidden from screen readers. They are only fetched when near the screen and play only while on screen and the tab is visible; with reduced motion, Save-Data or a 2G connection only the still poster is shown.

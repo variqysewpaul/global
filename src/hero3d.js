@@ -23,7 +23,9 @@ function toTime(u) {
 
 export function initHero3D({ reduced, lenis }) {
   const hero = document.getElementById('hero');
-  const api = { scene: null };
+  // progress() is how far the page's 3D is (0-1); the loading curtain waits for it only when the scene is built up front
+  let sceneP = 1;
+  const api = { scene: null, progress: () => sceneP };
   if (!hero) return api;
 
   const conn = navigator.connection || {};
@@ -39,6 +41,7 @@ export function initHero3D({ reduced, lenis }) {
   }
 
   const lowPower = matchMedia('(max-width: 820px), (pointer: coarse)').matches || (navigator.hardwareConcurrency ?? 8) <= 4;
+  if (!lowPower) sceneP = 0; // phones load it later, behind the poster, so the curtain does not wait for it
   const intro = hero.querySelector('#hero-a');
   const chapters = [...hero.querySelectorAll('.chapter')];
   const stepBtns = [...hero.querySelectorAll('.steps button')];
@@ -113,12 +116,15 @@ export function initHero3D({ reduced, lenis }) {
         api.scene = scene;
         scene.setProgress(toTime(progress));
         scene.setCovered(!inView);
+        scene.onProgress = (p) => (sceneP = lowPower ? 1 : p);
         await scene.ready;
+        sceneP = 1;
         scene.start();
         canvas.classList.add('is-ready');
       })
       .catch((err) => {
         console.error(err);
+        sceneP = 1;
         fallBack();
       });
   // On phones the 3D waits until the page itself has loaded and the browser is idle, so it never competes with first paint and

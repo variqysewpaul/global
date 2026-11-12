@@ -4,6 +4,7 @@
 //    block scrolls into view the lines rise and fade in one after another (the transitions are in sections.css).
 //  - Numbered rows, service entries and groups rise in as they arrive.
 //  - The videos drift slowly against the scroll (parallax).
+//  - Rings, glows and pictures fade in as they arrive. A safety net shows anything left waiting once scrolling stops.
 //  - The ticks at the left show where you are and jump between sections.
 //  - A ring follows the pointer on fine pointers; it swells over links and carries a label over the list of who we work for.
 //
@@ -56,7 +57,8 @@ function numberLines(words) {
 }
 
 function initReveals() {
-  const blocks = $$('[data-lines]').map((el) => ({ el, words: splitWords(el) }));
+  // headings and paragraphs are split into words; the hero's headline too (it is let in by the curtain's exit, not by scrolling)
+  const blocks = $$('[data-lines], [data-intro]').map((el) => ({ el, words: splitWords(el) }));
   const measure = () => blocks.forEach((b) => numberLines(b.words));
   document.fonts?.ready.then(measure);
   measure();
@@ -66,18 +68,35 @@ function initReveals() {
     timer = setTimeout(measure, 200); // line breaks change with the width
   });
 
+  // everything that waits to be shown: text blocks, rows, entries, and the glows, rings and pictures that fade in
+  const waiting = new Set($$('[data-lines], .listItem, .service, .group, [data-fade]'));
+  const reveal = (el) => {
+    if (el.matches('[data-lines]')) numberLines(blocks.find((b) => b.el === el).words); // fonts may have changed the breaks
+    el.classList.add('is-inview');
+    io.unobserve(el);
+    waiting.delete(el);
+  };
   const io = new IntersectionObserver(
     (entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        if (e.target.matches('[data-lines]')) numberLines(blocks.find((b) => b.el === e.target).words); // fonts may have changed the breaks
-        e.target.classList.add('is-inview');
-        io.unobserve(e.target);
-      }
+      for (const e of entries) if (e.isIntersecting) reveal(e.target);
     },
     { rootMargin: '0px 0px -12% 0px', threshold: 0.01 },
   );
-  $$('[data-lines], .listItem, .service, .group').forEach((el) => io.observe(el));
+  waiting.forEach((el) => io.observe(el));
+
+  // safety net: once scrolling has stopped, anything at or above the bottom of the screen is shown, however it got there (a jump from
+  // the menu, a fast fling, a resize), so no text is ever left waiting out of sight
+  let settle;
+  addEventListener(
+    'scroll',
+    () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        for (const el of [...waiting]) if (el.getBoundingClientRect().top < innerHeight) reveal(el);
+      }, 250);
+    },
+    { passive: true },
+  );
 }
 
 function initParallax() {
@@ -125,15 +144,18 @@ function initCursor() {
       xTo(e.clientX);
       yTo(e.clientY);
       ring.classList.add('is-on');
-      const lab = e.target.closest?.('[data-cursor]');
       const link = e.target.closest?.('a, button, summary');
-      ring.classList.toggle('is-label', !!lab);
-      ring.classList.toggle('is-link', !lab && !!link);
-      if (lab) label.textContent = lab.dataset.cursor;
+      const text = !link && e.target.closest?.('[data-cursor]')?.dataset.cursor;
+      ring.classList.toggle('is-label', !!text);
+      ring.classList.toggle('is-link', !text && !!link);
+      if (text) label.textContent = text;
     },
     { passive: true },
   );
   document.documentElement.addEventListener('pointerleave', () => ring.classList.remove('is-on'));
+  // over the hero the ring says "Scroll" until the visitor has scrolled (as on the example)
+  const pin = document.querySelector('.hero__pin');
+  if (pin) addEventListener('scroll', () => (pin.dataset.cursor = scrollY > 60 ? '' : 'Scroll'), { passive: true });
 }
 
 export function initMotion({ reduced }) {
