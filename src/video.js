@@ -1,4 +1,4 @@
-// The background videos in the lower sections (the armed response vehicle and the pistol). They are decoration: muted, looping,
+// The background videos in the lower sections (the armed response vehicle). They are decoration: muted, looping,
 // no controls, hidden from screen readers.
 //
 // Cheap by design: nothing is fetched until the video is near the screen (first the still poster, then the video itself when it is

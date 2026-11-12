@@ -3,15 +3,13 @@
 //  - Text reveals line by line: headings and paragraphs are split into words, each word knows which line it is on, and when the
 //    block scrolls into view the lines rise and fade in one after another (the transitions are in sections.css).
 //  - Numbered rows, service entries and groups rise in as they arrive.
-//  - The pictures drift slowly against the scroll (parallax); the small globes turn with it.
-//  - The promise line is a strip of large type you can drag, with a little inertia, and a "Swipe" cursor.
+//  - The videos drift slowly against the scroll (parallax).
 //  - The ticks at the left show where you are and jump between sections.
-//  - A ring follows the pointer on fine pointers; it swells over links and carries a label over draggable or hoverable areas.
+//  - A ring follows the pointer on fine pointers; it swells over links and carries a label over the list of who we work for.
 //
-// Reduced motion: nothing is split or animated; the content is simply there (the marquee can still be dragged).
+// Reduced motion: nothing is split or animated; the content is simply there.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { initGlobes } from './globe.js';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -88,66 +86,7 @@ function initParallax() {
       gsap.fromTo(img, { yPercent: -amount }, { yPercent: amount, ease: 'none', scrollTrigger: { trigger: img.closest('.blk'), start: 'top bottom', end: 'bottom top', scrub: true } }),
     );
   drift('.phil__media video', 5);
-  drift('.marquee__bg video', 6);
   drift('.closing__media video', 7);
-}
-
-// the promise line: one strip of type, repeated to fill, that you drag; it keeps going a little and then settles
-function initMarquee() {
-  const slider = document.querySelector('.marquee__slider');
-  if (!slider) return;
-  const track = slider.querySelector('.marquee__track');
-  const slide = track.firstElementChild;
-  let w = 1;
-  let x = 0;
-  let v = 0;
-  let dragging = false;
-  let last = 0;
-  const fill = () => {
-    w = slide.offsetWidth || 1;
-    const need = Math.ceil((slider.offsetWidth * 2) / w) + 1;
-    while (track.children.length < need) track.append(slide.cloneNode(true));
-  };
-  const render = () => {
-    x = ((x % w) - w) % w;
-    track.style.transform = `translate3d(${x}px,0,0)`;
-  };
-  fill();
-  render();
-  document.fonts?.ready.then(() => {
-    fill();
-    render();
-  });
-  addEventListener('resize', fill);
-  slider.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    dragging = true;
-    last = e.clientX;
-    v = 0;
-    slider.setPointerCapture(e.pointerId);
-    slider.classList.add('is-drag');
-  });
-  slider.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - last;
-    last = e.clientX;
-    x += dx;
-    v = dx;
-    render();
-  });
-  const end = () => {
-    dragging = false;
-    slider.classList.remove('is-drag');
-  };
-  slider.addEventListener('pointerup', end);
-  slider.addEventListener('pointercancel', end);
-  gsap.ticker.add((_, dtMs) => {
-    if (dragging || Math.abs(v) < 0.05) return;
-    const f = dtMs / 16.7;
-    x += v * f;
-    v *= Math.pow(0.93, f);
-    render();
-  });
 }
 
 function initTicks() {
@@ -198,9 +137,7 @@ function initCursor() {
 }
 
 export function initMotion({ reduced }) {
-  initMarquee();
   initTicks();
-  initGlobes(reduced);
   if (reduced) return;
   initReveals();
   initParallax();

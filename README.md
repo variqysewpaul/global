@@ -10,7 +10,7 @@ npm run build    # static site in dist/
 
 Build size: the page's own JavaScript is about 140 KB (53 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
 about 557 KB (144 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
-The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry three short videos (`public/video`, 1.0–1.2 MB each; about a quarter of that on phones) that are only fetched when they come on screen.
+The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 1.1–1.2 MB each; about a quarter of that on phones) that are only fetched when they come on screen.
 
 ## Design intent
 
@@ -20,8 +20,8 @@ The hero needs no video or models: the scene is generated in code (the two poste
   lighting follows the approach of the Ekhaya site's water scene, so the sites share one look.
 - **Below the hero, the layout and motion of armadillo-gs.com**, in our colours (near-black, pink panels, white type) and with our own words.
   Same section order, same proportions (everything is sized in `vw`, measured on a 1440 px screen), same line-by-line text reveals, the
-  same full-screen menu, section ticks, hover pictures and draggable strip. Their sphere videos are bespoke assets, so the same slots
-  carry our own footage (the armed response vehicle and a pistol) and a small turning globe (like the one in our logo). The scene's products
+  same full-screen menu, section ticks and hover pictures. Their sphere videos are bespoke assets, so the same slots
+  carry our own footage (the armed response vehicle). The scene's products
   (camera, gate motor, beam posts, monitors) appear only in the hero, not again in the body.
 
 ## What's on the page
@@ -33,29 +33,25 @@ The hero needs no video or models: the scene is generated in code (the two poste
    phones) jumps between stations; each chapter's button puts that subject on the email links in the Contact section.
 2. **Intro**: two columns of text, the larger one first.
 3. **Our approach**: a pink half-panel (title, paragraph, three numbered values: always on, always on the way, done properly) beside a
-   video of the armed response vehicle (it drifts as you scroll), with a small turning globe above it and a large faint ring.
+   video of the armed response vehicle (it drifts as you scroll) and a large faint ring.
 4. **Our services**: title and paragraph over a six-entry numbered grid (alarms, gates, CCTV, hardware, control room, armed response), on a
    soft pink glow. Each entry is an email link with the subject filled in.
-5. **The promise**: "Always on, Always listening & Always on the way" in very large type over a looping video of a pistol with violet light, smoke and sparks. Drag it (a
-   "Swipe" cursor shows); it carries on a little and settles.
-6. **Who we work for** (pink): intro text on the left; homes, businesses, and complexes and commercial sites on the right. Hovering a row
+5. **Who we work for** (pink): intro text on the left; homes, businesses, and complexes and commercial sites on the right. Hovering a row
    draws a line under it and opens a round picture of the vehicle behind it with a "View" cursor (on touch screens each row carries a small round picture).
-7. **About us**, then a wide band with a second video of the vehicle (the camera carries on round to the rear, with the phone number on the side) and a ring.
-8. **Contact** (pink footer): a very large "Contact", a paragraph with the phone, email and directions links, and a bar with the address,
+6. **About us**, then a wide band with a second video of the vehicle (the camera carries on round to the rear, with the phone number on the side) and a ring.
+7. **Contact** (pink footer): a very large "Contact", a paragraph with the phone, email and directions links, and a bar with the address,
    email, phone and fax. There is no form: the email and phone links are the enquiry route.
 
 The **menu** (the button at the top right, on every screen size) opens a full-screen list of the sections. On wide screens, **ticks** at the
 left edge show where you are (they appear after the hero); hovering them reveals the section names.
 
-### How the lower page moves (`src/motion.js`, `src/globe.js`, `src/sections.css`)
+### How the lower page moves (`src/motion.js`, `src/video.js`, `src/sections.css`)
 
 - **Line-by-line text:** each heading and paragraph is split into words, each word is given its line number, and when the block scrolls into
   view the lines rise 3 vw and fade in one after another (0.9 s, easing `cubic-bezier(.33,1,.68,1)`, 0.15 s between title lines). The line
   numbers are re-measured when the window is resized. Numbered rows, services and groups rise in as they arrive.
-- **Parallax:** the three videos drift slowly against the scroll. The small globes (a 2D canvas, about a thousand points a frame, only
-  while on screen) turn with it.
-- **The strip** is one line of type repeated to fill, dragged with pointer events and a little inertia; vertical swipes still scroll the page.
-- **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a label over the strip and the group list.
+- **Parallax:** the two videos drift slowly against the scroll.
+- **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a "View" label over the "who we work for" list.
 - All of it is transform or opacity. With reduced motion nothing is split or animated and the content is simply there.
 
 ## The hero scene
@@ -114,10 +110,9 @@ mid-visit the poster comes back until it recovers.
 - **Posters:** snap the opening shot as a PNG at 1600 × 900 and 900 × 1600, then
   `ffmpeg -y -i .snaps/poster-land.png -c:v libwebp -quality 86 -compression_level 6 public/poster.webp` (and the same for `poster-tall.webp`).
   Needs ffmpeg (winget package `Gyan.FFmpeg`). The posters are drawn by the scene itself, so the live scene fades in over an identical frame.
-- **Videos for the lower sections** (`public/video`, played by `src/video.js`) come from two supplied clips (1280 × 720, 24 fps, 10 s, with sound). Audio is dropped.
-  `vehicle-1` is the first 5 s of the vehicle clip and `vehicle-2` the last 5 s, each played forwards then backwards (so the loop has no cut); `pistol` is
-  the pistol clip with its last second cross-faded into its first (a seamless 9 s loop). Each has a 640 × 360 `-sm` version for phones and a `.webp` poster
-  (its first frame). For example, the first vehicle clip:
+- **Videos for the lower sections** (`public/video`, played by `src/video.js`) come from a supplied clip of the armed response vehicle (1280 × 720, 24 fps, 10 s, with sound; the sound is dropped).
+  `vehicle-1` is its first 5 s and `vehicle-2` its last 5 s, each played forwards then backwards (so the loop has no cut). Each has a 640 × 360 `-sm`
+  version for phones and a `.webp` poster (its first frame). For example, the first vehicle clip:
   `ffmpeg -ss 0 -t 5 -i vehicle.mp4 -filter_complex "[0:v]scale=1280:720,split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1:a=0[v]" -map "[v]" -an -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart public/video/vehicle-1.mp4`
   (use `scale=640:360` and `-crf 30` for the `-sm` file). The round pictures in "Who we work for" (`public/img/armed-*.webp`) are 720 × 720 stills of the vehicle clip.
   To add a video, put `<video muted loop playsinline preload="none" data-poster="…" data-src="…" data-src-sm="…">` in a section; `video.js` does the rest.
@@ -146,14 +141,14 @@ mid-visit the poster comes back until it recovers.
 
 - **The products in the scene** are generic, drawn in code (a bullet camera, a gate motor, beam posts, monitors); they are not the client's own equipment, and
   the beams are shown as glowing violet lines (real beams are invisible infrared), so the glow is a visual device. Real photography or footage of their installations would lift the page further.
-- **The footage** (the vehicle and the pistol clips) is AI-generated, so check it for details that do not match the real thing: the vehicle's livery and number plate, and the firearm. A video of a firearm being fired is a marketing choice the client should approve.
+- **The footage** (the vehicle clip) is AI-generated, so check it for details that do not match the real thing, such as the vehicle's livery and number plate.
 - Copy is built only from the information supplied (services, areas, 24/7 control room and armed response). The intro, approach, "who we work for", "about" and contact wording should be approved. No claims such as years in business, response times, accreditations or pricing are made.
 - **Logo:** redrawn as vector from the vinyl on the vehicle (`node scripts/build-logo.mjs` regenerates `public/logo.svg`, `logo-reverse.svg`, `logo-mark.svg`, the favicon and the symbols in `index.html`). The lettering uses Michroma as a stand-in and the figure is hand-drawn, so swap in the client's real vector logo when available.
 - Enquiries go by `mailto:` and phone only (the page has no form); connect a form service or backend if the client wants one.
 
 ## Folders
 
-`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `globe.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) ·
+`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `video.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) ·
 `dev3d.html` the scene on its own, for development (not in the build) ·
 `ai-brief/` the prompts and the clip an earlier version was built from ·
 `archive/` earlier versions, none in the build: `clip-scrub-hero/` (the footage hero scrubbed by scroll: its `film.js` and `sequence.js`, and the frames),

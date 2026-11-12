@@ -366,17 +366,6 @@
   border: 1px solid rgba(255, 95, 174, 0.28);
   pointer-events: none;
 }
-.phil__moon {
-  position: absolute;
-  width: calc(var(--u) * 6.25);
-  aspect-ratio: 1;
-  z-index: 2;
-}
-.phil__moon {
-  left: 50%;
-  top: calc(var(--u) * 3.125);
-  translate: -50% 0;
-}
 
 /* ---------------------------------------------------------------- services */
 .services {
@@ -451,58 +440,6 @@
 }
 .service .number {
   transition: opacity 0.3s;
-}
-
-/* ---------------------------------------------------------------- the promise (draggable) */
-.marquee {
-  padding: calc(var(--u) * 18.75) 0 calc(var(--u) * 25);
-  overflow: hidden;
-}
-.marquee__inner {
-  position: relative;
-  height: calc(var(--u) * 51.25);
-}
-.marquee__bg {
-  position: absolute;
-  inset: -4% 0;
-  -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
-  mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
-}
-.marquee__bg video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.marquee__slider {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(var(--u) * 19.4);
-  overflow: hidden;
-  cursor: grab;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.marquee__slider.is-drag {
-  cursor: grabbing;
-}
-.marquee__track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-}
-.marquee__slide {
-  flex: none;
-}
-.marqueeTitle {
-  display: block;
-  padding-right: calc(var(--u) * 6);
-  font: 500 calc(var(--u) * 12.5) / 1.1 var(--display);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-  color: var(--text);
 }
 
 /* ---------------------------------------------------------------- who we work for (pink) */
@@ -824,13 +761,6 @@
   .phil__right {
     height: min(110vw, 760px);
   }
-  .phil__moon {
-    width: 22vw;
-    max-width: 130px;
-  }
-  .phil__moon {
-    top: 8vw;
-  }
   .phil__ring {
     left: -40vw;
     top: -120vw;
@@ -860,21 +790,6 @@
   }
   .service .name {
     font-size: 1.02rem;
-  }
-
-  .marquee {
-    padding: 18vw 0 22vw;
-  }
-  .marquee__inner {
-    height: 74vw;
-  }
-  .marquee__slider {
-    top: 50%;
-    translate: 0 -50%;
-  }
-  .marqueeTitle {
-    font-size: 24vw;
-    padding-right: 12vw;
   }
 
   .groups {
