@@ -352,8 +352,8 @@
 .phil__media {
   position: absolute;
   inset: -6% 0;
-  -webkit-mask-image: radial-gradient(closest-side, #000 52%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 52%, transparent 100%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
 }
 .phil__media video {
   display: block;
@@ -578,8 +578,8 @@
 .closing__media {
   position: absolute;
   inset: -8% 0;
-  -webkit-mask-image: radial-gradient(ellipse 60% 82% at 50% 56%, #000 42%, transparent 100%);
-  mask-image: radial-gradient(ellipse 60% 82% at 50% 56%, #000 42%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 66% 90% at 50% 54%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 66% 90% at 50% 54%, #000 50%, transparent 100%);
 }
 .closing__media video {
   display: block;
@@ -1117,7 +1117,7 @@
 .hero__copy,
 .chapter,
 .steps {
-  text-shadow: 0 1px 14px rgba(7, 6, 11, 0.65);
+  text-shadow: 0 1px 3px rgba(7, 6, 11, 0.6), 0 2px 22px rgba(7, 6, 11, 0.85);
 }
 .hero .btn {
   text-shadow: none;

@@ -2,10 +2,20 @@
 // no controls, hidden from screen readers.
 //
 // Cheap by design: nothing is fetched until the video is near the screen (first the still poster, then the video itself when it is
-// actually on screen), it plays only while it is on screen and the tab is visible, and a small version is used on phones. With
-// reduced motion, Save-Data or a 2G connection the video is never fetched and the poster stays as a still picture.
+// actually on screen), it plays only while it is on screen and the tab is visible, and a lighter file is used where it is enough.
+// With reduced motion, Save-Data or a 2G connection the video is never fetched and the poster stays as a still picture.
+//
+// Sharp by design: the files are cropped to the shape they are shown in and enlarged with a good filter when they are made
+// (tools/encode-videos.sh), so the browser does not have to crop and enlarge them (that is what made them look soft).
+//
+// Which file a picture needs: its width on the page times the screen's pixel density (counted up to 2). Phones and ordinary
+// laptop screens get the lighter file (already one real pixel or more per screen pixel there); large or high-density screens get
+// the full one.
+const wantsFull = (v) => v.clientWidth * Math.min(window.devicePixelRatio || 1, 2) > 800;
+const pick = (v, key) => (!wantsFull(v) && v.dataset[`${key}Sm`]) || v.dataset[key];
+
 const posterOf = (v) => {
-  if (v.dataset.poster && !v.poster) v.poster = v.dataset.poster;
+  if (v.dataset.poster && !v.poster) v.poster = pick(v, 'poster');
 };
 
 export function initVideos({ reduced }) {
@@ -13,7 +23,6 @@ export function initVideos({ reduced }) {
   if (!vids.length) return;
   const conn = navigator.connection || {};
   const still = reduced || conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
-  const small = matchMedia('(max-width: 900px)').matches;
   const visible = new Set();
 
   // the poster arrives a little before the video is on screen
@@ -31,7 +40,7 @@ export function initVideos({ reduced }) {
   if (still) return;
 
   const play = (v) => {
-    if (!v.getAttribute('src')) v.src = small && v.dataset.srcSm ? v.dataset.srcSm : v.dataset.src;
+    if (!v.getAttribute('src')) v.src = pick(v, 'src');
     v.muted = true; // required for autoplay
     v.play()?.catch(() => {}); // blocked (low-power mode, say): the poster stays
   };

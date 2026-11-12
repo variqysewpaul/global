@@ -10,7 +10,7 @@ npm run build    # static site in dist/
 
 Build size: the page's own JavaScript is about 145 KB (54 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
 about 557 KB (144 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
-The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 1.1–1.2 MB each; about a quarter of that on phones) that are only fetched when they come on screen.
+The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 2.1 MB and 3.2 MB; about 1 MB each on phones and ordinary laptop screens) that are only fetched when they come on screen.
 
 ## Design intent
 
@@ -66,7 +66,7 @@ rises and fades (1 s), the curtain fades (0.45 s) and `is-loaded` goes on `<html
 - **Line-by-line text:** each heading and paragraph is split into words, each word is given its line number, and when the block scrolls into
   view the lines rise 3 vw and fade in one after another (0.9 s, easing `cubic-bezier(.33,1,.68,1)`, 0.15 s between title lines). The line
   numbers are re-measured when the window is resized. Numbered rows, services and groups rise in as they arrive.
-- **Parallax:** the two videos drift slowly against the scroll.
+- **Parallax:** the two videos drift slowly against the scroll, in whole pixels only (a picture resting on a fraction of a pixel is resampled by the browser and looks soft).
 - **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a "View" label over the "who we work for" list.
 - **Nothing is left hidden:** once scrolling stops, any text, row or picture at or above the bottom of the screen is shown, however it got there (a jump from
   the menu, a fast fling, a resize), so a reveal that was missed cannot leave text out of sight.
@@ -129,11 +129,18 @@ mid-visit the poster comes back until it recovers.
   `ffmpeg -y -i .snaps/poster-land.png -c:v libwebp -quality 86 -compression_level 6 public/poster.webp` (and the same for `poster-tall.webp`).
   Needs ffmpeg (winget package `Gyan.FFmpeg`). The posters are drawn by the scene itself, so the live scene fades in over an identical frame.
 - **Videos for the lower sections** (`public/video`, played by `src/video.js`) come from a supplied clip of the armed response vehicle (1280 × 720, 24 fps, 10 s, with sound; the sound is dropped).
-  `vehicle-1` is its first 5 s and `vehicle-2` its last 5 s, each played forwards then backwards (so the loop has no cut). Each has a 640 × 360 `-sm`
-  version for phones and a `.webp` poster (its first frame). For example, the first vehicle clip:
-  `ffmpeg -ss 0 -t 5 -i vehicle.mp4 -filter_complex "[0:v]scale=1280:720,split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1:a=0[v]" -map "[v]" -an -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart public/video/vehicle-1.mp4`
-  (use `scale=640:360` and `-crf 30` for the `-sm` file). The round pictures in "Who we work for" (`public/img/armed-*.webp`) are 720 × 720 stills of the vehicle clip.
-  To add a video, put `<video muted loop playsinline preload="none" data-poster="…" data-src="…" data-src-sm="…">` in a section; `video.js` does the rest.
+  `bash tools/encode-videos.sh "path/to/clip.mp4"` (needs ffmpeg; use Git Bash on Windows) makes all eight files: `vehicle-1` (the first 5 s, for the tall "Our approach" panel) and
+  `vehicle-2` (the last 5 s, for the wide closing band), each with a lighter `-sm` file and a `.webp` poster (its first frame). Each half plays forwards then backwards, so the loop has no cut.
+  - **Why they are sharp.** The page shows the clip in a tall panel and a wide band, so a browser has to crop the 16:9 frame to that shape and then enlarge it (1.1× to 1.4× on a normal
+    screen, more on a high-density one) with a soft bilinear filter. That, plus compressing to a quarter of the original bitrate and enlarging a 640 px phone version about three times,
+    is what made the first version look blurry. The script instead crops to the shape the picture is shown in, lightly removes the generated footage's shimmer (`hqdn3d`), enlarges with Lanczos
+    and a little contrast-adaptive sharpening (`cas`), and encodes at CRF 22 (24 for the lighter files). The source's colour tags are kept, so the colours match the original.
+  - **Sizes:** `vehicle-1` 960 × 1104 (2.1 MB), `vehicle-1-sm` 720 × 828 (1.0 MB), `vehicle-2` 1600 × 694 (3.2 MB), `vehicle-2-sm` 720 × 496 (0.9 MB).
+    `video.js` picks the file by how many real pixels the picture needs (its width on the page × the screen's pixel density, up to 2): over 800 it takes the full file, otherwise the lighter one.
+  - **Limits:** the real detail cannot exceed the 1280 × 720 source. For a truly crisp result export the clip from the generator at 1080p or 4K and run the script again (it adapts to the source size).
+    The framing and quality knobs (`PHIL_X`, `CLOSE_Y`, `CAS`, `DENOISE`, `CRF`, `CRF_SM`) are listed at the top of the script.
+  - The round pictures in "Who we work for" (`public/img/armed-*.webp`) are 720 × 720 stills of the vehicle clip.
+  - To add a video, put `<video muted loop playsinline preload="none" data-poster="…" data-poster-sm="…" data-src="…" data-src-sm="…">` in a section; `video.js` does the rest.
 - Pictures from the 3D scene from a camera of your own: `__scene.snapCam('name.png', { pos: [x, y, z], look: [x, y, z], fov }, width, height)` (station *i* is at x = *i* × 16: camera 0, gate motor 16, beam posts 32, monitors 48), writing to `.snaps/`.
 - Handy in the browser console: `__gss.hero.scene` (the scene), `__gss.lenis.stop()` before testing so a stray wheel event does not move the page.
 
@@ -143,7 +150,7 @@ mid-visit the poster comes back until it recovers.
 - **Sections:** under 1000 px wide everything stacks in one column and sizes switch from `vw` to rem and viewport-width values; the ticks are hidden.
 - **Hero:** the four stations sit on one row of pills (the active one filled). On short phones (under 760 px high) the intro paragraph is dropped so the product stays visible; under 600 px the chapter paragraphs go too. Landscape phones (under 520 px high) get a compact layout. Safe-area insets are respected.
 - **3D on phones** (a coarse pointer, a narrow screen or 4 cores or fewer): pixel ratio capped at 1.25 and allowed to fall to 0.75 if frames run long; the mirror is smaller and redraws every other frame; the scene is only fetched once the page has loaded and the browser is idle, so the poster, copy and first scroll are never competing with it. Devices with 2 cores or 2 GB of memory or less get the poster instead.
-- The videos use the small encodes (about 270–300 KB each) below 900 px wide.
+- The videos use the lighter files (about 0.9–1 MB each) wherever the picture needs fewer than about 800 real pixels, which covers phones and ordinary laptop screens.
 - Touch targets are at least 44 px; the canvas follows its own box, so the address bar sliding away does not resize it.
 
 ## Accessibility
@@ -153,6 +160,9 @@ mid-visit the poster comes back until it recovers.
 - **Legibility:** small text is at least 14 px and body text at least 16 px (they scale up with the screen); an automated check of every text element below the hero
   against WCAG AA passes (white on the pink is 4.75:1, the large "Contact" title is 4.25:1 against 3:1 needed). Over the busy monitor wall the hero adds a darker shade
   behind the copy and the stepper, and all hero text has a soft shadow.
+- **The hero copy is big on purpose**, as the centre of attention: on a 1440 × 900 screen a chapter's title is 60 px, its paragraph 21 px, the list 19 px and the eyebrow 15 px (69, 22, 20 and 16 px at 1920 × 1080;
+  about 37 px and 17 px on a phone). Sizes follow both the width and the height of the window (`min()` of the two in `src/style.css`), the column is held to the left 40% so it never runs into the product,
+  and a short laptop window (under 700 px high) drops the list rather than let the copy reach the header.
 - One `h1`, logical headings, labelled regions and form fields, visible focus rings, `lang="en-ZA"`. The canvas is `aria-hidden` with a text description. The stepper is real buttons with `aria-current`. Hidden chapters are not focusable.
 - Contrast: an automated pass over every text element below the hero found no failures against WCAG AA (run on an earlier version). The hero copy sits over the scene with a light shade behind it and should be re-checked.
 - The videos are decoration: muted, no controls, hidden from screen readers. They are only fetched when near the screen and play only while on screen and the tab is visible; with reduced motion, Save-Data or a 2G connection only the still poster is shown.
@@ -169,7 +179,7 @@ mid-visit the poster comes back until it recovers.
 
 ## Folders
 
-`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `video.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) ·
+`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `video.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) · `tools/` `encode-videos.sh`, which makes the page's videos and posters from the source clip ·
 `dev3d.html` the scene on its own, for development (not in the build) ·
 `ai-brief/` the prompts and the clip an earlier version was built from ·
 `archive/` earlier versions, none in the build: `clip-scrub-hero/` (the footage hero scrubbed by scroll: its `film.js` and `sequence.js`, and the frames),

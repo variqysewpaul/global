@@ -100,9 +100,20 @@ function initReveals() {
 }
 
 function initParallax() {
+  // the pictures drift a little against the scroll, in whole pixels only: a picture resting on a fraction of a pixel is resampled
+  // by the browser and looks soft
   const drift = (sel, amount) =>
     $$(sel).forEach((img) =>
-      gsap.fromTo(img, { yPercent: -amount }, { yPercent: amount, ease: 'none', scrollTrigger: { trigger: img.closest('.blk'), start: 'top bottom', end: 'bottom top', scrub: true } }),
+      gsap.fromTo(
+        img,
+        { y: () => (-img.offsetHeight * amount) / 100 },
+        {
+          y: () => (img.offsetHeight * amount) / 100,
+          ease: 'none',
+          snap: { y: 1 },
+          scrollTrigger: { trigger: img.closest('.blk'), start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true },
+        },
+      ),
     );
   drift('.phil__media video', 5);
   drift('.closing__media video', 7);
