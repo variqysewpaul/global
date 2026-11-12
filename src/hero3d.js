@@ -9,6 +9,8 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { fast3DContext } from './scene/context.js';
+import { splitWords } from './motion.js';
+import { getMotion } from './spring.js';
 
 // Scroll progress (0-1 down the pinned hero) at which the camera is at the opening shot and at each station. The camera is
 // still moving between them; the last station is held to the end, so its copy has time to be read before the page moves on.
@@ -51,6 +53,75 @@ export function initHero3D({ reduced, lenis }) {
   let active = -1;
   let st;
 
+  // The chapters' copy is cued by the camera arriving, not scrubbed by the scroll: each chapter's lines rise out of a mask one after
+  // another (Motion: staggered, with a spring on the buttons), and leave quickly when the camera moves on. Cued like this the copy
+  // moves the same way however fast or slowly the visitor scrolls.
+  const EASE = [0.16, 1, 0.3, 1];
+  const parts = chapters.map((el) => {
+    const words = splitWords(el.querySelector('.title')).map((w) => {
+      const mask = document.createElement('span');
+      mask.className = 'mask';
+      w.replaceWith(mask);
+      mask.append(w);
+      return w;
+    });
+    return {
+      el,
+      eyebrow: el.querySelector('.eyebrow'),
+      words,
+      lede: el.querySelector('.lede'),
+      checks: [...el.querySelectorAll('.checks li')],
+      buttons: [...el.querySelectorAll('.cta-row .btn')],
+      run: [],
+    };
+  });
+  const hidden = (p) => [p.eyebrow, ...p.words, p.lede, ...p.checks, ...p.buttons].forEach((e) => e && (e.style.opacity = '0'));
+  const stop = (p) => {
+    p.run.forEach((c) => c.stop?.());
+    p.run = [];
+  };
+  const enter = (p) => {
+    stop(p);
+    const M = getMotion();
+    p.el.style.visibility = 'visible';
+    p.el.style.opacity = '1';
+    p.el.style.transform = 'none';
+    if (!M) return; // (not loaded yet: the copy simply appears)
+    const { animate, stagger } = M;
+    hidden(p);
+    p.run = [
+      animate(p.eyebrow, { opacity: [0, 1], y: [14, 0] }, { duration: 0.7, ease: EASE }),
+      animate(p.words, { opacity: [0, 1], y: ['115%', '0%'] }, { duration: 1.0, ease: EASE, delay: stagger(0.055, { startDelay: 0.1 }) }),
+      animate(p.lede, { opacity: [0, 1], y: [18, 0] }, { duration: 0.9, ease: EASE, delay: 0.38 }),
+      ...(p.checks.length ? [animate(p.checks, { opacity: [0, 1], x: [-16, 0] }, { duration: 0.7, ease: EASE, delay: stagger(0.08, { startDelay: 0.55 }) })] : []),
+      animate(p.buttons, { opacity: [0, 1], y: [20, 0], scale: [0.9, 1] }, { type: 'spring', stiffness: 360, damping: 22, delay: stagger(0.09, { startDelay: 0.7 }) }),
+    ];
+  };
+  const leave = (p) => {
+    stop(p);
+    const M = getMotion();
+    if (!M) {
+      p.el.style.opacity = '0';
+      p.el.style.visibility = 'hidden';
+      return;
+    }
+    const { animate } = M;
+    p.run = [animate(p.el, { opacity: 0, y: -16 }, { duration: 0.32, ease: [0.4, 0, 1, 1] })];
+    p.run[0].then?.(() => {
+      if (p.el.style.opacity === '0') {
+        p.el.style.visibility = 'hidden';
+        p.el.style.transform = 'none';
+      }
+    });
+  };
+  let cue;
+  const showChapter = (from, to) => {
+    clearTimeout(cue);
+    if (from >= 0) leave(parts[from]);
+    // a beat after arriving, so scrolling quickly through a station does not flash its copy
+    if (to >= 0) cue = setTimeout(() => enter(parts[to]), from >= 0 ? 160 : 70);
+  };
+
   const setState = (u) => {
     const t = toTime(u);
     let a = -1;
@@ -58,25 +129,18 @@ export function initHero3D({ reduced, lenis }) {
       if (Math.abs(t - (i + 1)) < 0.5) a = i;
     });
     if (a !== active) {
+      const from = active;
       active = a;
+      showChapter(from, a);
       hero.dataset.station = a < 0 ? 'intro' : String(a);
       stepBtns.forEach((b, i) => (i === a ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
     }
   };
 
-  // copy: the intro fades as the camera leaves the first station; each chapter shows while the camera is at its station
+  // the intro fades as the camera leaves the first station (scrubbed by the scroll); the chapters are cued, see above
   const tl = gsap.timeline({ defaults: { ease: 'none' } });
   tl.fromTo(intro, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -24, duration: 0.03, ease: 'power1.in', immediateRender: false }, 0.1);
   tl.fromTo('.scroll-cue', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.03, immediateRender: false }, 0.01);
-  chapters.forEach((ch, i) => {
-    const s = i + 1;
-    const a = STOPS[s] - NEAR * (STOPS[s] - STOPS[s - 1]);
-    tl.fromTo(ch, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.03, ease: 'power2.out', immediateRender: false }, a);
-    if (i < n - 1) {
-      const b = STOPS[s] + NEAR * (STOPS[s + 1] - STOPS[s]);
-      tl.fromTo(ch, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -18, duration: 0.025, ease: 'power1.in', immediateRender: false }, b - 0.025);
-    }
-  });
   tl.set({}, {}, 1);
 
   // the scene smooths the camera itself, so the scroll drives it directly (no second layer of lag)
@@ -106,6 +170,8 @@ export function initHero3D({ reduced, lenis }) {
     hero.classList.add('hero--still');
     st?.kill();
     tl.kill();
+    clearTimeout(cue);
+    parts.forEach(stop);
     gsap.set([intro, '.scroll-cue'], { clearProps: 'all' });
   };
   let inView = true;
@@ -121,6 +187,7 @@ export function initHero3D({ reduced, lenis }) {
         sceneP = 1;
         scene.start();
         canvas.classList.add('is-ready');
+        hero.classList.toggle('hero--graded', !!scene.post); // the finishing pass has its own vignette
       })
       .catch((err) => {
         console.error(err);

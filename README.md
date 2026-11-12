@@ -1,6 +1,6 @@
 # Global Security Solutions — site
 
-Vite + vanilla JS. **GSAP** (ScrollTrigger) for animation, **Lenis** for smooth scrolling, **three.js** for the hero scene. Fonts: Montserrat (headings), Poppins (text), Inter (hero), Michroma (logo wordmark).
+Vite + vanilla JS. **GSAP** (ScrollTrigger) for the scroll choreography, **Lenis** for smooth scrolling, **Motion** (motion.dev) for springs and staggered entrances, **three.js** for the hero scene (no React: the scene is plain three.js, so R3F and Drei would add a framework and weight for no gain). Fonts: Montserrat (headings), Poppins (text), Inter (hero), Michroma (logo wordmark).
 
 ```bash
 npm install
@@ -8,8 +8,8 @@ npm run dev      # http://localhost:5173   (the 3D scene on its own: http://loca
 npm run build    # static site in dist/
 ```
 
-Build size: the page's own JavaScript is about 145 KB (54 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
-about 557 KB (144 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
+Build size: the page's own JavaScript is about 147 KB (55 KB gzipped). Motion is its own 26 KB (gzipped) chunk, fetched once the page has loaded and the browser is idle. The 3D scene (three.js,
+the studio code and the finishing pass) is a separate chunk of about 577 KB (150 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
 The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 2.1 MB and 3.2 MB; about 1 MB each on phones and ordinary laptop screens) that are only fetched when they come on screen.
 
 ## Design intent
@@ -80,7 +80,10 @@ rises and fades (1 s), the curtain fades (0.45 s) and `is-loaded` goes on `<html
 | `src/scene/context.js` | Asks for a WebGL2 context and refuses software rendering. No three.js in it, so the page can ask before downloading the 3D code. |
 | `src/scene/kit.js` | The studio kit: the lit environment, textures generated in code, the polished floor, floor decals, the renderer. |
 | `src/scene/models.js`, `models2.js` | The products (camera, gate motor, beam posts, monitors) and their materials. |
-| `src/scene/SecurityScene.js` | Builds the scene a piece at a time, owns the shots and the camera, the frame loop, adaptive resolution and the snapshot helper. |
+| `src/scene/SecurityScene.js` | Builds the scene a piece at a time, owns the shots, the camera rig, the per-chapter grade (`MOODS`), the frame loop, adaptive resolution and the snapshot helper. |
+| `src/scene/post.js` | The finishing pass: HDR render target, bloom, depth of field, motion blur, grade, vignette, grain, dither. |
+| `src/scene/atmosphere.js` | Dust drifting in the key lights and the faint haze of each beam. |
+| `src/spring.js`, `src/motion-lib.js` | Loads Motion lazily (only `animate` and `stagger`), after the page. |
 
 **Why it looks real.** Most of it is lighting, not geometry (the same recipe as the Ekhaya site):
 
@@ -93,13 +96,35 @@ rises and fades (1 s), the curtain fades (0.45 s) and `is-loaded` goes on `<html
 - Soft shadows (VSM) are drawn once, because nothing that casts a shadow moves. ACES filmic tone mapping rolls highlights off like a camera.
 - The floor is polished stone: a blurred mirror that strengthens at grazing angles (Fresnel), faint mineral grain, and an edge that
   dissolves into the dark. Contact shadows and light pools are decals kept out of the mirror.
-- Beams are a crisp additive core plus soft gradient ribbons (no hard-edged tubes); LEDs are emissive with a glow sprite. There is no
-  post-processing pass, which would cost more than the scene on integrated graphics.
+- Beams are a crisp additive core plus soft gradient ribbons (no hard-edged tubes); LEDs are emissive HDR (brighter than white), so they bloom.
+- **Air:** a faint additive cone of haze in each key light (visible only while the camera is at that station) and dust drifting through the
+  lights, a few specks large and soft, out of focus, close to the lens: that is what gives a camera move its sense of depth (`atmosphere.js`).
+
+**The finishing pass** (`src/scene/post.js`; big screens only, `?nopost` switches it off). The scene is drawn into a half-float (HDR) target with 4x
+multisampling, so highlights keep their energy, then, in linear light:
+
+1. **Bloom** from a chain of five blurred copies (the dual-filter method): only what is brighter than 1.8 spills (LEDs, beams, chrome), with a soft knee.
+2. **Depth of field**: a golden-angle gather whose radius follows each pixel's distance from the focus plane, weighted so the product stays sharp and the wall behind
+   it softens. The empty background counts as in focus, so beams and glows over it stay crisp. Focus follows what the camera looks at, a little late (a rack focus), and each
+   chapter has its own aperture (shallowest on the CCTV macro).
+3. **Motion blur** along the camera's movement (a 1/48 s shutter), so a move between stations has the smear of a real whip, and none while the camera rests.
+4. A hair of **chromatic aberration** toward the edges, then the **grade**: exposure, contrast around mid-grey, a split-tone (a violet tint in the darks, a warm or cool
+   cast in the lights, set per chapter in `MOODS`), saturation, a lens **vignette**, then three's own ACES tone mapping and sRGB, then **film grain** and a triangular
+   **dither** (dark gradients band badly in 8 bits).
+
+If the frame rate stays under 45 fps at the lowest resolution, twice running, the depth of field is dropped first and then the bloom. Phones, and devices without float
+render targets, draw straight to the screen as before (they keep the camera work, the haze and the dust). Measured here on an Intel Iris Xe at 1440 x 900, pixel ratio 1: about 70 fps
+with the whole pass on.
 
 **How it stays smooth.**
 
-- The scene smooths the camera itself (`current += (target - current) * min(1, dt * 4.5)`) on top of Lenis, so scrolling in jumps still
-  moves the camera in one continuous glide. The camera dwells at each station and glides between them.
+- **The camera** (`placeCamera`, `render` in `SecurityScene.js`) follows the scroll on a spring (natural frequency 4.8, damping 0.86), on top of Lenis, so it eases away, glides and
+  settles with the faintest overshoot, however the scroll arrives. It dwells at each station and, between stations, moves like a camera on a short boom: the body eases harder than the
+  scroll, the eye leads the head (the look target arrives a beat early), the camera cranes up half a unit, pulls back and widens 3.5 degrees mid-move, banks about 1.7 degrees into the
+  turn, then pushes in as it lands. On top: two unrelated waves per axis of hand-held drift, and the pointer swings the camera a few degrees round the subject (real parallax).
+- **The copy is cued by the camera, not scrubbed by the scroll** (`hero3d.js`): when the camera arrives at a station (after a beat, so scrolling quickly through does not flash it)
+  each word of the title rises out of its own mask in a stagger, the paragraph and the list follow, and the buttons spring in (Motion); when it leaves, the chapter fades quickly.
+  Hero buttons lean toward the pointer and press in on springs (`initMagnetic` in `motion.js`).
 - Resolution adapts: if frames average slower than 45 fps the pixel ratio steps down (never below 1); with headroom it steps back up.
   Measured here on an Intel Iris Xe: 1920 × 1080 at pixel ratio 1 about 110 fps, at 1.5 about 58 fps.
 - The canvas follows its own box (a `ResizeObserver`), not the window, so a phone's address bar sliding away does not re-allocate it.

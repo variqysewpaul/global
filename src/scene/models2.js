@@ -316,7 +316,7 @@ export function buildMonitors(m) {
   for (const f of feeds) {
     const unit = new THREE.Group();
     unit.add(at(rbox(4.2, 2.6, 0.18, 0.07, m.blackPlastic, 5), 0, 0, 0));
-    const screen = new THREE.Mesh(new THREE.PlaneGeometry(3.96, 2.22), new THREE.MeshBasicMaterial({ map: feedTexture(f.label, f.seed, f.alert), toneMapped: false }));
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(3.96, 2.22), new THREE.MeshBasicMaterial({ map: feedTexture(f.label, f.seed, f.alert), color: new THREE.Color(1.5, 1.5, 1.5), toneMapped: false }));
     screen.position.set(0, 0.02, 0.095);
     unit.add(screen);
     // a clear sheet over the screen, so it catches the softboxes like real glass

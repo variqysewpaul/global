@@ -40,8 +40,8 @@ export function makeMaterials() {
     coating: phys({ color: '#150b28', roughness: 0.12, metalness: 0.2, iridescence: 1, iridescenceIOR: 1.7, iridescenceThicknessRange: [250, 700], envMapIntensity: 2.2 }),
     wall: new THREE.MeshStandardMaterial({ color: '#3a3342', roughness: 0.92, normalMap: plaster, normalScale: new THREE.Vector2(0.5, 0.5), envMapIntensity: 0.3 }),
     // emissive accents (not lit: they glow)
-    pink: (k = 1.7) => new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff5fae').multiplyScalar(k) }),
-    violet: (k = 2.4) => new THREE.MeshBasicMaterial({ color: new THREE.Color('#c88cff').multiplyScalar(k) }),
+    pink: (k = 3.0) => new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff5fae').multiplyScalar(k) }),
+    violet: (k = 3.2) => new THREE.MeshBasicMaterial({ color: new THREE.Color('#c88cff').multiplyScalar(k) }),
   };
 }
 

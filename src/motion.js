@@ -11,11 +11,12 @@
 // Reduced motion: nothing is split or animated; the content is simply there.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motionReady } from './spring.js';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 // Wrap every word in a span (inline tags such as <a> keep working). Returns the new spans.
-function splitWords(el) {
+export function splitWords(el) {
   const out = [];
   const walk = (node) => {
     for (const n of [...node.childNodes]) {
@@ -169,10 +170,26 @@ function initCursor() {
   if (pin) addEventListener('scroll', () => (pin.dataset.cursor = scrollY > 60 ? '' : 'Scroll'), { passive: true });
 }
 
+// Buttons in the hero lean toward the pointer and press in, on springs (Motion): they have weight, and settle with a little give.
+async function initMagnetic() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const { animate } = await motionReady();
+  for (const el of $$('.hero .btn')) {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      animate(el, { x: (e.clientX - (r.left + r.width / 2)) * 0.22, y: (e.clientY - (r.top + r.height / 2)) * 0.32 }, { type: 'spring', stiffness: 280, damping: 20, mass: 0.6 });
+    });
+    el.addEventListener('pointerleave', () => animate(el, { x: 0, y: 0, scale: 1 }, { type: 'spring', stiffness: 200, damping: 12, mass: 0.7 }));
+    el.addEventListener('pointerdown', () => animate(el, { scale: 0.95 }, { type: 'spring', stiffness: 700, damping: 26 }));
+    el.addEventListener('pointerup', () => animate(el, { scale: 1.02 }, { type: 'spring', stiffness: 420, damping: 11 }));
+  }
+}
+
 export function initMotion({ reduced }) {
   initTicks();
   if (reduced) return;
   initReveals();
   initParallax();
   initCursor();
+  initMagnetic();
 }
