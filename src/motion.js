@@ -87,9 +87,9 @@ function initParallax() {
     $$(sel).forEach((img) =>
       gsap.fromTo(img, { yPercent: -amount }, { yPercent: amount, ease: 'none', scrollTrigger: { trigger: img.closest('.blk'), start: 'top bottom', end: 'bottom top', scrub: true } }),
     );
-  drift('.phil__media img', 5);
-  drift('.marquee__bg img', 6);
-  drift('.closing__media img', 7);
+  drift('.phil__media video', 5);
+  drift('.marquee__bg video', 6);
+  drift('.closing__media video', 7);
 }
 
 // the promise line: one strip of type, repeated to fill, that you drag; it keeps going a little and then settles
