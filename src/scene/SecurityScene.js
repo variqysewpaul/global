@@ -186,6 +186,17 @@ export class SecurityScene {
   }
 
   placeCamera(t, time) {
+    // development: a fixed camera for stills (see snapCam)
+    if (this.override) {
+      const o = this.override;
+      this.camera.position.set(...o.pos);
+      this.look.set(...o.look);
+      this.camera.fov = o.fov;
+      this.camera.lookAt(this.look);
+      this.camera.updateProjectionMatrix();
+      this.floor.material.uniforms.uFocus.value.set(this.look.x, this.look.z);
+      return;
+    }
     const last = this.shots.length - 1;
     const i = Math.min(last - 1, Math.floor(t));
     const k = last > 0 ? smooth(0.2, 0.8, t - i) : 0; // dwell at each station, glide between
@@ -265,6 +276,21 @@ export class SecurityScene {
     this.render(0.016, 3);
     const blob = await new Promise((r) => this.canvas.toBlob(r, type, 0.88));
     await fetch('/__save?name=' + encodeURIComponent(name), { method: 'POST', body: blob });
+    this.fixed = null;
+    this.resize();
+    return blob.size;
+  }
+
+  /** Development: like snap, but from a camera of your own: { pos: [x,y,z], look: [x,y,z], fov } in world units (station i is at x = i * 16). */
+  async snapCam(name, cam, w, h) {
+    this.override = cam;
+    this.fixed = [w, h];
+    this.resize();
+    this.render(0.016, 3);
+    const type = name.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const blob = await new Promise((r) => this.canvas.toBlob(r, type, 0.9));
+    await fetch('/__save?name=' + encodeURIComponent(name), { method: 'POST', body: blob });
+    this.override = null;
     this.fixed = null;
     this.resize();
     return blob.size;

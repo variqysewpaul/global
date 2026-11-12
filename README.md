@@ -1,6 +1,6 @@
 # Global Security Solutions — site
 
-Vite + vanilla JS. **GSAP** (ScrollTrigger) for animation, **Lenis** for smooth scrolling, **three.js** for the hero scene.
+Vite + vanilla JS. **GSAP** (ScrollTrigger) for animation, **Lenis** for smooth scrolling, **three.js** for the hero scene. Fonts: Montserrat (headings), Poppins (text), Inter (hero), Michroma (logo wordmark).
 
 ```bash
 npm install
@@ -10,36 +10,52 @@ npm run build    # static site in dist/
 
 Build size: the page's own JavaScript is about 140 KB (53 KB gzipped). The 3D scene (three.js and the studio code) is a separate chunk of
 about 557 KB (144 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
-There are no video frames, models or textures to download: the scene is generated in code. The two posters are 78 KB and 62 KB.
+There are no video frames or models to download: the scene is generated in code. The two posters are 78 KB and 62 KB, and the pictures in the lower sections (`public/img`, rendered from the same scene) are about 250 KB in all, loaded lazily.
 
 ## Design intent
 
-- **A product studio at the top, corporate everywhere else.** The hero is a real-time 3D scene lit like a product photograph: a dark
-  studio, large softboxes, polished black floor, soft shadows, filmic tone mapping. Scrolling moves the camera from product to product
-  (a CCTV camera, a gate motor, beam sensors, the control-room monitors). Because the camera is real, the movement is continuous: there
-  are no frames to jump between. The lighting follows the approach of the Ekhaya site's water scene, so the sites share one look.
-  Everything below the hero is plain, clear and professional: light and dark bands, sentence-case Montserrat headings, Inter body text,
-  pink as an accent.
-- **Light and transitions below the hero:** soft glows that drift across the dark sections, headings that wipe in, a process line that fills as you scroll.
+- **A product studio at the top.** The hero is a real-time 3D scene lit like a product photograph: a dark studio, large softboxes, polished
+  black floor, soft shadows, filmic tone mapping. Scrolling moves the camera from product to product (a CCTV camera, a gate motor, beam
+  sensors, the control-room monitors). Because the camera is real, the movement is continuous: there are no frames to jump between. The
+  lighting follows the approach of the Ekhaya site's water scene, so the sites share one look.
+- **Below the hero, the layout and motion of armadillo-gs.com**, in our colours (near-black, pink panels, white type) and with our own words.
+  Same section order, same proportions (everything is sized in `vw`, measured on a 1440 px screen), same line-by-line text reveals, the
+  same full-screen menu, section ticks, hover pictures and draggable strip. Their sphere videos are bespoke assets, so the same slots
+  carry pictures rendered from our own 3D scene and a small turning globe (like the one in our logo).
 
 ## What's on the page
 
-1. **Hero and services** (`src/hero3d.js`, `src/scene/`). One pinned stage (about 7.5 screens of scroll; 6 on phones). The camera starts on the
-   opening shot with the headline, then glides to each station and rests there while its copy is read:
-   - **CCTV:** a bullet camera on a plaster wall, close on the lens and its infrared ring.
-   - **Gates:** a gate motor on its base, with the rack and pinion that drives the gate set out in front.
-   - **Sensors & beams:** a pair of beam posts with violet beams between them.
-   - **Control room & armed response:** a wall of monitors showing camera feeds, held to the end of the hero for the closing message.
-   A stepper on the right (pills at the top on phones) jumps between stations, and each chapter's button pre-selects that option in the
-   enquiry form.
-2. **Key points** strip.
-3. **Our approach** (grey): a large statement whose words light up as you scroll through it, and three numbered values (always on, always on the way, done properly).
-4. **Armed response & control room** (dark): four steps (signal, operator, dispatch, on site) and a call to action, with rings spreading out behind it.
-5. **Services** (light): numbered rows (alarms, gates, CCTV, hardware), each listing what's included with an "Enquire" link.
-6. **Promise marquee**: a line of large type ("Always on. Always listening. Always on the way.") that drifts and leans into the scroll direction.
-7. **About** (grey), **Coverage** (Google Maps loads only when the visitor clicks "Show map"), **FAQ** (native `<details>`), **Contact** (the form opens the visitor's email app), footer.
+1. **Hero** (`src/hero3d.js`, `src/scene/`). One pinned stage (about 7.5 screens of scroll; 6 on phones). The camera starts on the opening shot
+   with the headline, then glides to each station and rests there while its copy is read: **CCTV** (a bullet camera on a plaster wall),
+   **Gates** (a gate motor, with the rack and pinion that drives the gate), **Sensors & beams** (a pair of posts with violet beams between
+   them), **Control room & armed response** (a wall of monitors, held to the end of the hero). A stepper on the right (pills at the top on
+   phones) jumps between stations; each chapter's button puts that subject on the email links in the Contact section.
+2. **Intro**: two columns of text, the larger one first.
+3. **Our approach**: a pink half-panel (title, paragraph, three numbered values: always on, always on the way, done properly) beside a
+   picture that drifts as you scroll, with a small turning globe above it and a large faint ring.
+4. **Our services**: title and paragraph over a six-entry numbered grid (alarms, gates, CCTV, hardware, control room, armed response), on a
+   soft pink glow. Each entry is an email link with the subject filled in.
+5. **The promise**: "Always on, Always listening & Always on the way" in very large type over a picture of the beam posts. Drag it (a
+   "Swipe" cursor shows); it carries on a little and settles.
+6. **Who we work for** (pink): intro text on the left; homes, businesses, and complexes and commercial sites on the right. Hovering a row
+   draws a line under it and opens a round picture behind it with a "View" cursor (on touch screens each row carries a small round picture).
+7. **About us**, then a band with the monitor wall, a ring and a globe.
+8. **Contact** (pink footer): a very large "Contact", a paragraph with the phone, email and directions links, and a bar with the address,
+   email, phone and fax. There is no form: the email and phone links are the enquiry route.
 
-The structure and motion of the lower page borrow from armadillo-gs.com (numbered sections, a values marquee, masked headline reveals); the wording is our own, written only from the information the client supplied. The motion lives in `src/motion.js`: headlines (each word rises out of its own mask), the scroll-lit statement, numbered rows (a hairline draws across, then the content rises in), the rings, the marquee, and a ring that follows the pointer on fine pointers. All transform/opacity only; with reduced motion none of it runs and the content is simply there.
+The **menu** (the button at the top right, on every screen size) opens a full-screen list of the sections. On wide screens, **ticks** at the
+left edge show where you are (they appear after the hero); hovering them reveals the section names.
+
+### How the lower page moves (`src/motion.js`, `src/globe.js`, `src/sections.css`)
+
+- **Line-by-line text:** each heading and paragraph is split into words, each word is given its line number, and when the block scrolls into
+  view the lines rise 3 vw and fade in one after another (0.9 s, easing `cubic-bezier(.33,1,.68,1)`, 0.15 s between title lines). The line
+  numbers are re-measured when the window is resized. Numbered rows, services and groups rise in as they arrive.
+- **Parallax:** the three pictures drift slowly against the scroll. The small globes (a 2D canvas, about a thousand points a frame, only
+  while on screen) turn with it.
+- **The strip** is one line of type repeated to fill, dragged with pointer events and a little inertia; vertical swipes still scroll the page.
+- **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a label over the strip and the group list.
+- All of it is transform or opacity. With reduced motion nothing is split or animated and the content is simply there.
 
 ## The hero scene
 
@@ -97,11 +113,15 @@ mid-visit the poster comes back until it recovers.
 - **Posters:** snap the opening shot as a PNG at 1600 × 900 and 900 × 1600, then
   `ffmpeg -y -i .snaps/poster-land.png -c:v libwebp -quality 86 -compression_level 6 public/poster.webp` (and the same for `poster-tall.webp`).
   Needs ffmpeg (winget package `Gyan.FFmpeg`). The posters are drawn by the scene itself, so the live scene fades in over an identical frame.
+- **Pictures for the lower sections** (`public/img/*.webp`) are renders too: `__scene.snapCam('name.png', { pos: [x, y, z], look: [x, y, z], fov }, width, height)`
+  draws from a camera of your own (station *i* is at x = *i* × 16: camera 0, gate motor 16, beam posts 32, monitors 48), then convert with
+  `ffmpeg -y -i .snaps/name.png -c:v libwebp -quality 78 public/img/name.webp`.
 - Handy in the browser console: `__gss.hero.scene` (the scene), `__gss.lenis.stop()` before testing so a stray wheel event does not move the page.
 
 ## Phones
 
-- **Menu:** the header links are hidden below 1100 px, so a round menu button opens a full-screen menu (`#menu`; the page behind it is `inert`, Escape closes it, choosing a link closes it and scrolls). Below 440 px the header's call button is round and icon-only; the number is in the hero and the menu.
+- **Menu:** the same full-screen menu as on wide screens; the page behind it is `inert`, Escape closes it, and choosing a link closes it and scrolls. Below 560 px the header's phone number is hidden (it is in the hero, the menu and the Contact section).
+- **Sections:** under 1000 px wide everything stacks in one column and sizes switch from `vw` to rem and viewport-width values; the ticks are hidden.
 - **Hero:** the four stations sit on one row of pills (the active one filled). On short phones (under 760 px high) the intro paragraph is dropped so the product stays visible; under 600 px the chapter paragraphs go too. Landscape phones (under 520 px high) get a compact layout. Safe-area insets are respected.
 - **3D on phones** (a coarse pointer, a narrow screen or 4 cores or fewer): pixel ratio capped at 1.25 and allowed to fall to 0.75 if frames run long; the mirror is smaller and redraws every other frame; the scene is only fetched once the page has loaded and the browser is idle, so the poster, copy and first scroll are never competing with it. Devices with 2 cores or 2 GB of memory or less get the poster instead.
 - Touch targets are at least 44 px; the canvas follows its own box, so the address bar sliding away does not resize it.
@@ -112,19 +132,19 @@ mid-visit the poster comes back until it recovers.
 - Skip link jumps past the hero and moves keyboard focus to the next section; in-page links move focus to their target.
 - One `h1`, logical headings, labelled regions and form fields, visible focus rings, `lang="en-ZA"`. The canvas is `aria-hidden` with a text description. The stepper is real buttons with `aria-current`. Hidden chapters are not focusable.
 - Contrast: an automated pass over every text element below the hero found no failures against WCAG AA (run on an earlier version). The hero copy sits over the scene with a light shade behind it and should be re-checked.
-- Third-party content (the map) loads only on request.
+- No third-party content is loaded: the address links to Google Maps in a new tab rather than embedding it.
 
 ## Things to confirm with the client
 
 - **The products in the scene** are generic, drawn in code (a bullet camera, a gate motor, beam posts, monitors); they are not the client's own equipment, and
   the beams are shown as glowing violet lines (real beams are invisible infrared), so the glow is a visual device. Real photography or footage of their installations would lift the page further.
-- Copy is built only from the information supplied (services, areas, 24/7 control room and armed response). The FAQ, "about" and chapter wording should be approved. No claims such as years in business, response times, accreditations or pricing are made.
+- Copy is built only from the information supplied (services, areas, 24/7 control room and armed response). The intro, approach, "who we work for", "about" and contact wording should be approved. No claims such as years in business, response times, accreditations or pricing are made.
 - **Logo:** redrawn as vector from the vinyl on the vehicle (`node scripts/build-logo.mjs` regenerates `public/logo.svg`, `logo-reverse.svg`, `logo-mark.svg`, the favicon and the symbols in `index.html`). The lettering uses Michroma as a stand-in and the figure is hand-drawn, so swap in the client's real vector logo when available.
-- The contact form uses `mailto:`; connect a form service or backend when ready.
+- Enquiries go by `mailto:` and phone only (the page has no form); connect a form service or backend if the client wants one.
 
 ## Folders
 
-`src/` page code (`scene/` is the 3D hero) · `public/` logo, favicon and posters · `scripts/` logo generator (and the frame generator for the archived clip hero) ·
+`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `globe.js` are the lower page) · `public/` logo, favicon, posters and `img/` (renders from the scene) · `scripts/` logo generator (and the frame generator for the archived clip hero) ·
 `dev3d.html` the scene on its own, for development (not in the build) ·
 `ai-brief/` the prompts and the clip an earlier version was built from ·
 `archive/` earlier versions, none in the build: `clip-scrub-hero/` (the footage hero scrubbed by scroll: its `film.js` and `sequence.js`, and the frames),

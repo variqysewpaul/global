@@ -1,7 +1,10 @@
 import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
 import '@fontsource/michroma';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
 import './style.css';
+import './sections.css';
 
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -25,7 +28,7 @@ async function boot() {
 
   const hero = initHero3D({ reduced, lenis });
   initUI({ lenis, reduced });
-  initMotion({ lenis, reduced });
+  initMotion({ reduced });
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
   window.__gss = { lenis, hero, gsap, ScrollTrigger }; // handy for tuning in the console
