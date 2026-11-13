@@ -6,10 +6,11 @@
 # Writes public/video/vehicle-1.mp4, vehicle-1-sm.mp4, vehicle-2.mp4, vehicle-2-sm.mp4 and a poster (.webp) for each.
 #
 # Why it is done this way (this is what keeps the picture sharp):
-#   - The page shows the clip in a TALL panel ("Our approach", first half of the clip) and a WIDE band (closing, second half).
-#     A browser would crop the 16:9 frame to that shape and then enlarge it with a soft bilinear filter, which is what made the
-#     footage look blurry. Here the crop is made once, in the file, and the picture is enlarged with Lanczos (far cleaner) and a
-#     light contrast-adaptive sharpen, so the browser has little or nothing left to enlarge.
+#   - The page shows the first half of the clip on a card ("Our approach", cropped to a tall shape) and the second half full screen
+#     ("Armed response": the whole 16:9 frame on big screens, a tall crop on phones). A browser would crop the frame to the shape it is
+#     shown in and then enlarge it with a soft bilinear filter, which is what made the footage look blurry. Here the crop is made
+#     once, in the file, and the picture is enlarged with Lanczos (far cleaner) and a light contrast-adaptive sharpen, so the browser
+#     has little or nothing left to enlarge.
 #   - A light temporal denoise goes first: generated footage carries a shimmer that sharpening would exaggerate and that costs a
 #     lot of bits to keep, so removing it gives a cleaner picture in a smaller file.
 #   - Each half plays forward then backward, so the loop has no jump.
@@ -21,7 +22,7 @@
 # generator at 1080p or 4K and run this script again: everything adapts to the source size.
 #
 # Tuning (environment variables): PHIL_X (left edge of the tall crop as a fraction of the width, default 0.28),
-# CLOSE_Y (top edge of the wide crop as a fraction of the height, default 0.14), CAS (sharpen strength 0-1, default 0.55),
+# PHONE_X (left edge of the phone crop, default centred), CAS (sharpen strength 0-1, default 0.55),
 # DENOISE (an ffmpeg filter, default hqdn3d=1.5:1.5:6:6; set it empty to switch it off), CRF / CRF_SM (default 22 / 24),
 # HALF (seconds per half, default 5), OUT (default public/video).
 set -euo pipefail
@@ -29,7 +30,6 @@ set -euo pipefail
 SRC="${1:?usage: bash tools/encode-videos.sh path/to/clip.mp4}"
 OUT="${OUT:-public/video}"
 PHIL_X="${PHIL_X:-0.28}"
-CLOSE_Y="${CLOSE_Y:-0.14}"
 CAS="${CAS:-0.55}"
 DENOISE="${DENOISE-hqdn3d=1.5:1.5:6:6}"
 CRF="${CRF:-22}"
@@ -49,12 +49,8 @@ even() { echo $(($1 / 2 * 2)); }
 # crops (in source pixels): tall = 0.87 : 1, wide = 2.31 : 1, phone wide = 1.45 : 1
 TALL_W=$(even "$(awk -v h="$SH" 'BEGIN{printf "%d", h*0.87}')")
 TALL_X=$(awk -v w="$SW" -v c="$TALL_W" -v x="$PHIL_X" 'BEGIN{v=int(w*x); if (v > w-c) v=w-c; print v}')
-WIDE_H=$(even "$(awk -v w="$SW" 'BEGIN{printf "%d", w/2.31}')")
-WIDE_Y=$(awk -v h="$SH" -v c="$WIDE_H" -v y="$CLOSE_Y" 'BEGIN{v=int(h*y); if (v > h-c) v=h-c; print v}')
-PHONE_W=$(even "$(awk -v h="$SH" 'BEGIN{printf "%d", h*1.45}')")
-PHONE_X=$(((SW - PHONE_W) / 2))
-[ "$WIDE_H" -le "$SH" ] || { WIDE_H=$SH; WIDE_Y=0; }
-[ "$PHONE_W" -le "$SW" ] || { PHONE_W=$SW; PHONE_X=0; }
+PHONE_W=$(even "$(awk -v h="$SH" 'BEGIN{printf "%d", h*0.6}')") # phones: a tall crop, 0.6 : 1
+PHONE_X=$(awk -v w="$SW" -v c="$PHONE_W" -v x="${PHONE_X:-}" 'BEGIN{v=(x=="") ? int((w-c)/2) : int(w*x); if (v > w-c) v=w-c; print v}')
 
 # make NAME START CROP(w:h:x:y) OUT_W OUT_H CRF
 make() {
@@ -71,8 +67,8 @@ make() {
 # first half: the tall panel (the vehicle's side and livery)
 make vehicle-1    0       "${TALL_W}:${SH}:${TALL_X}:0" 960 1104 "$CRF"
 make vehicle-1-sm 0       "${TALL_W}:${SH}:${TALL_X}:0" 720 828 "$CRF_SM"
-# second half: the wide closing band
-make vehicle-2    "$HALF" "${SW}:${WIDE_H}:0:${WIDE_Y}" 1600 694 "$CRF"
-make vehicle-2-sm "$HALF" "${PHONE_W}:${SH}:${PHONE_X}:0" 720 496 "$CRF_SM"
+# second half: full screen (the whole frame on big screens, a tall crop on phones)
+make vehicle-2    "$HALF" "${SW}:${SH}:0:0" 1600 900 "$CRF"
+make vehicle-2-sm "$HALF" "${PHONE_W}:${SH}:${PHONE_X}:0" 720 1200 "$CRF_SM"
 
 ls -l "$OUT"/vehicle-*

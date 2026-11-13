@@ -1,12 +1,5 @@
-// How the page below the hero moves, after armadillo-gs.com. Everything is transform or opacity.
-//
-//  - Text reveals line by line: headings and paragraphs are split into words, each word knows which line it is on, and when the
-//    block scrolls into view the lines rise and fade in one after another (the transitions are in sections.css).
-//  - Numbered rows, service entries and groups rise in as they arrive.
-//  - The videos drift slowly against the scroll (parallax).
-//  - Rings, glows and pictures fade in as they arrive. A safety net shows anything left waiting once scrolling stops.
-//  - The ticks at the left show where you are and jump between sections.
-//  - A ring follows the pointer on fine pointers; it swells over links and carries a label over the list of who we work for.
+// Small behaviours shared across the page: the hero headline's line-by-line entrance, the section ticks, the pointer ring and the
+// springy buttons. (The scroll choreography of the sections below the hero is in page.js.)
 //
 // Reduced motion: nothing is split or animated; the content is simply there.
 import gsap from 'gsap';
@@ -57,9 +50,9 @@ function numberLines(words) {
   }
 }
 
-function initReveals() {
-  // headings and paragraphs are split into words; the hero's headline too (it is let in by the curtain's exit, not by scrolling)
-  const blocks = $$('[data-lines], [data-intro]').map((el) => ({ el, words: splitWords(el) }));
+// The hero's headline is split into words and each word is given its line number (--l), which sets its delay when the curtain lifts.
+function initIntro() {
+  const blocks = $$('[data-intro]').map((el) => ({ el, words: splitWords(el) }));
   const measure = () => blocks.forEach((b) => numberLines(b.words));
   document.fonts?.ready.then(measure);
   measure();
@@ -68,56 +61,6 @@ function initReveals() {
     clearTimeout(timer);
     timer = setTimeout(measure, 200); // line breaks change with the width
   });
-
-  // everything that waits to be shown: text blocks, rows, entries, and the glows, rings and pictures that fade in
-  const waiting = new Set($$('[data-lines], .listItem, .service, .group, [data-fade]'));
-  const reveal = (el) => {
-    if (el.matches('[data-lines]')) numberLines(blocks.find((b) => b.el === el).words); // fonts may have changed the breaks
-    el.classList.add('is-inview');
-    io.unobserve(el);
-    waiting.delete(el);
-  };
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) if (e.isIntersecting) reveal(e.target);
-    },
-    { rootMargin: '0px 0px -12% 0px', threshold: 0.01 },
-  );
-  waiting.forEach((el) => io.observe(el));
-
-  // safety net: once scrolling has stopped, anything at or above the bottom of the screen is shown, however it got there (a jump from
-  // the menu, a fast fling, a resize), so no text is ever left waiting out of sight
-  let settle;
-  addEventListener(
-    'scroll',
-    () => {
-      clearTimeout(settle);
-      settle = setTimeout(() => {
-        for (const el of [...waiting]) if (el.getBoundingClientRect().top < innerHeight) reveal(el);
-      }, 250);
-    },
-    { passive: true },
-  );
-}
-
-function initParallax() {
-  // the pictures drift a little against the scroll, in whole pixels only: a picture resting on a fraction of a pixel is resampled
-  // by the browser and looks soft
-  const drift = (sel, amount) =>
-    $$(sel).forEach((img) =>
-      gsap.fromTo(
-        img,
-        { y: () => (-img.offsetHeight * amount) / 100 },
-        {
-          y: () => (img.offsetHeight * amount) / 100,
-          ease: 'none',
-          snap: { y: 1 },
-          scrollTrigger: { trigger: img.closest('.blk'), start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true },
-        },
-      ),
-    );
-  drift('.phil__media video', 5);
-  drift('.closing__media video', 7);
 }
 
 function initTicks() {
@@ -150,17 +93,37 @@ function initCursor() {
   document.body.append(ring);
   const xTo = gsap.quickTo(ring, 'x', { duration: 0.4, ease: 'power3' });
   const yTo = gsap.quickTo(ring, 'y', { duration: 0.4, ease: 'power3' });
+  const read = (target) => {
+    const link = target?.closest?.('a, button, summary');
+    const text = !link && target?.closest?.('[data-cursor]')?.dataset.cursor;
+    ring.classList.toggle('is-label', !!text);
+    ring.classList.toggle('is-link', !text && !!link);
+    if (text) label.textContent = text;
+  };
+  let px = -1;
+  let py = -1;
   addEventListener(
     'pointermove',
     (e) => {
-      xTo(e.clientX);
-      yTo(e.clientY);
+      px = e.clientX;
+      py = e.clientY;
+      xTo(px);
+      yTo(py);
       ring.classList.add('is-on');
-      const link = e.target.closest?.('a, button, summary');
-      const text = !link && e.target.closest?.('[data-cursor]')?.dataset.cursor;
-      ring.classList.toggle('is-label', !!text);
-      ring.classList.toggle('is-link', !text && !!link);
-      if (text) label.textContent = text;
+      read(e.target);
+    },
+    { passive: true },
+  );
+  // the page moves under a resting pointer: read what is there now (a frame after the scroll, not on every event)
+  let wait = 0;
+  addEventListener(
+    'scroll',
+    () => {
+      if (wait || px < 0) return;
+      wait = requestAnimationFrame(() => {
+        wait = 0;
+        read(document.elementFromPoint(px, py));
+      });
     },
     { passive: true },
   );
@@ -170,11 +133,11 @@ function initCursor() {
   if (pin) addEventListener('scroll', () => (pin.dataset.cursor = scrollY > 60 ? '' : 'Scroll'), { passive: true });
 }
 
-// Buttons in the hero lean toward the pointer and press in, on springs (Motion): they have weight, and settle with a little give.
+// Buttons lean toward the pointer and press in, on springs (Motion): they have weight, and settle with a little give.
 async function initMagnetic() {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   const { animate } = await motionReady();
-  for (const el of $$('.hero .btn')) {
+  for (const el of $$('.hero .btn, .theater .btn, .scard__cta')) {
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();
       animate(el, { x: (e.clientX - (r.left + r.width / 2)) * 0.22, y: (e.clientY - (r.top + r.height / 2)) * 0.32 }, { type: 'spring', stiffness: 280, damping: 20, mass: 0.6 });
@@ -188,8 +151,7 @@ async function initMagnetic() {
 export function initMotion({ reduced }) {
   initTicks();
   if (reduced) return;
-  initReveals();
-  initParallax();
+  initIntro();
   initCursor();
   initMagnetic();
 }

@@ -25,6 +25,7 @@ const MOODS = [
   { exposure: 1.02, contrast: 1.08, sat: 1.05, shadow: [0.002, 0.001, 0.006], high: [1.05, 0.98, 0.98], bloom: 0.5, aperture: 11 },
   { exposure: 1.04, contrast: 1.1, sat: 1.1, shadow: [0.004, 0.001, 0.009], high: [1.0, 0.96, 1.06], bloom: 0.55, aperture: 9 },
   { exposure: 1.0, contrast: 1.07, sat: 1.04, shadow: [0.0015, 0.002, 0.008], high: [0.98, 0.99, 1.06], bloom: 0.5, aperture: 8 },
+  { exposure: 2.4, contrast: 0.95, sat: 0.85, shadow: [0.0015, 0.002, 0.008], high: [1, 0.97, 1.08], bloom: 1.3, aperture: 5 }, // 5 the screen blooms as the camera goes into it
 ];
 
 export class SecurityScene {
@@ -186,6 +187,7 @@ export class SecurityScene {
       shot(1, [3.4, 1.7, 9.4], [-1.0, 1.3, 0.4], 30, 0), // 2 gates: the motor and its drive
       shot(2, [-0.8, 3.5, 12.8], [-4.8, 3.4, 0], 30, -3.2), // 3 sensors: the left post and the beams leaving it
       shot(3, [0.2, 3.3, 11.8], [-1.6, 3.0, 0], 30, 0), // 4 control room: the monitor wall
+      { ...shot(3, [0.1, 2.72, 3.5], [0, 2.72, 0], 24, 0), arc: 0.12 }, // 5 the push through the middle monitor
     ];
   }
 
@@ -258,7 +260,7 @@ export class SecurityScene {
     // a short boom, then pushes in as it lands: that arc is what makes it read as a camera and not as a slide.
     const kp = lerp(k, smooth(0, 1, k), 0.6);
     const kl = smooth(0, 1, Math.min(1, Math.max(0, (k - 0.5) * 1.2 + 0.5)));
-    const arc = Math.sin(Math.PI * k);
+    const arc = Math.sin(Math.PI * k) * (b.arc ?? 1); // (the push through the monitor is a straight move: no crane, no pull back)
     const pos = this.pos.lerpVectors(a.pos, b.pos, kp);
     this.look.lerpVectors(a.look, b.look, kl);
     pos.addScaledVector(this.tmpA.copy(pos).sub(this.look).normalize(), arc * 1.8);

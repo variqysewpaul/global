@@ -1,6 +1,6 @@
 # Global Security Solutions — site
 
-Vite + vanilla JS. **GSAP** (ScrollTrigger) for the scroll choreography, **Lenis** for smooth scrolling, **Motion** (motion.dev) for springs and staggered entrances, **three.js** for the hero scene (no React: the scene is plain three.js, so R3F and Drei would add a framework and weight for no gain). Fonts: Montserrat (headings), Poppins (text), Inter (hero), Michroma (logo wordmark).
+Vite + vanilla JS. **GSAP** (ScrollTrigger) for the scroll choreography, **Lenis** for smooth scrolling, **Motion** (motion.dev) for springs and staggered entrances, **three.js** for the hero scene (no React: the scene is plain three.js, so R3F and Drei would add a framework and weight for no gain). Fonts: Montserrat (headlines and numerals), Inter (text), Geist Mono (small technical labels), Michroma (logo wordmark).
 
 ```bash
 npm install
@@ -8,9 +8,9 @@ npm run dev      # http://localhost:5173   (the 3D scene on its own: http://loca
 npm run build    # static site in dist/
 ```
 
-Build size: the page's own JavaScript is about 147 KB (55 KB gzipped). Motion is its own 26 KB (gzipped) chunk, fetched once the page has loaded and the browser is idle. The 3D scene (three.js,
+Build size: the page's own JavaScript is about 157 KB (58 KB gzipped). Motion is its own 26 KB (gzipped) chunk, fetched once the page has loaded and the browser is idle. The 3D scene (three.js,
 the studio code and the finishing pass) is a separate chunk of about 577 KB (150 KB gzipped) that is fetched after the page's copy, and only on devices that will draw it on a real graphics chip.
-The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 2.1 MB and 3.2 MB; about 1 MB each on phones and ordinary laptop screens) that are only fetched when they come on screen.
+The hero needs no video or models: the scene is generated in code (the two posters are 78 KB and 62 KB). The lower sections carry two short videos (`public/video`, 2.1 MB and 3.7 MB; about 1–1.2 MB each on phones and ordinary laptop screens) that are only fetched when they come on screen.
 
 ## Design intent
 
@@ -18,32 +18,35 @@ The hero needs no video or models: the scene is generated in code (the two poste
   black floor, soft shadows, filmic tone mapping. Scrolling moves the camera from product to product (a CCTV camera, a gate motor, beam
   sensors, the control-room monitors). Because the camera is real, the movement is continuous: there are no frames to jump between. The
   lighting follows the approach of the Ekhaya site's water scene, so the sites share one look.
-- **Below the hero, the layout and motion of armadillo-gs.com**, in our colours (near-black, pink panels, white type) and with our own words.
-  Same section order, same proportions (everything is sized in `vw`, measured on a 1440 px screen), same line-by-line text reveals, the
-  same full-screen menu, section ticks and hover pictures. Their sphere videos are bespoke assets, so the same slots
-  carry our own footage (the armed response vehicle). The scene's products
-  (camera, gate motor, beam posts, monitors) appear only in the hero, not again in the body.
+- **Below the hero, a film.** The same dark studio, the brand pink, and a scroll that works as a camera: a focus pull on a statement, cards stacking in depth, a
+  camera tracking along six service cards, a window that opens onto the footage and dollies back, a radar, a marquee that leans into your scroll, a curved panel that rises.
+  Studied on Awwwards winners (a defence-tech site, a luxury atelier): a grotesque with tight tracking for headlines, small tracked mono labels with "01 / 06" counters,
+  text that decodes as it appears, hairline rules, restraint. The 3D scene's products (camera, gate motor, beam posts, monitors) appear only in the hero.
 
 ## What's on the page
 
-1. **Hero** (`src/hero3d.js`, `src/scene/`). One pinned stage (about 7.5 screens of scroll; 6 on phones). The camera starts on the opening shot
+1. **Hero** (`src/hero3d.js`, `src/scene/`). One pinned stage (about 8.4 screens of scroll; 6.8 on phones). The camera starts on the opening shot
    with the headline, then glides to each station and rests there while its copy is read: **CCTV** (a bullet camera on a plaster wall),
    **Gates** (a gate motor, with the rack and pinion that drives the gate), **Sensors & beams** (a pair of posts with violet beams between
    them), **Control room & armed response** (a wall of monitors, held to the end of the hero). A stepper on the right (pills at the top on
    phones) jumps between stations; each chapter's button puts that subject on the email links in the Contact section.
-2. **Intro**: two columns of text, the larger one first.
-3. **Our approach**: a pink half-panel (title, paragraph, three numbered values: always on, always on the way, done properly) beside a
-   video of the armed response vehicle (it drifts as you scroll) and a large faint ring.
-4. **Our services**: title and paragraph over a six-entry numbered grid (alarms, gates, CCTV, hardware, control room, armed response), on a
-   soft pink glow. Each entry is an email link with the subject filled in.
-5. **Who we work for** (pink): intro text on the left; homes, businesses, and complexes and commercial sites on the right. Hovering a row
-   draws a line under it and opens a round picture of the vehicle behind it with a "View" cursor (on touch screens each row carries a small round picture).
-6. **About us**, then a wide band with a second video of the vehicle (the camera carries on round to the rear, with the phone number on the side) and a ring.
-7. **Contact** (pink footer): a very large "Contact", a paragraph with the phone, email and directions links, and a bar with the address,
-   email, phone and fax. There is no form: the email and phone links are the enquiry route.
+2. **01 Statement** (`#intro`). Pinned for about two screens: the opening statement's words come into focus one after another (opacity and a blur that sharpens) while
+   the block drifts forward; the two paragraphs follow.
+3. **02 Our approach** (`#philosophy`). The title and paragraph stay put while three cards (always on, always on the way, done properly) stack up in depth: each card the next
+   one covers steps back, shrinks and dims, and its title stays visible like a tab. The middle card carries the first half of the armed response footage.
+4. **03 Our services** (`#services`). Pinned: a camera tracks along six cards (alarms, gates, CCTV, hardware, control room, armed response). Each card turns to face you as it passes the
+   middle (3D tilt, depth and fade, computed from its distance to the centre), the middle one lights up and its small line drawing runs, and a counter and a progress line follow along.
+   Each card has an email link with the subject filled in. On phones the cards simply stack.
+5. **04 Armed response** (`#response`). Pinned: a rounded window in the dark opens to fill the screen, the footage inside it dollies back as it does, then a slow push-in
+   while the headline rises word by word. A viewfinder overlay (corner brackets, a recording dot, a timecode that follows the video) decodes on. The footage leans against the pointer.
+6. **05 Who we work for** (`#groups`). Three big rows (homes and families, businesses, complexes and commercial sites); the others dim when you hover one, and a picture of the vehicle,
+   tinted pink, follows the pointer and leans into its motion (a "View" label on the cursor ring).
+7. **06 About us** (`#about`). The company text beside a radar (Newcastle Central at the centre, the Amajuba District and KwaZulu-Natal as rings; a stylised graphic, not a map), then a marquee of the services.
+8. **07 Contact** (the footer). A pink panel whose top edge is a curve that flattens as it rises; the phone number as a huge headline that rolls in digit by digit; phone, email, address and fax.
+   There is no form: the email and phone links are the enquiry route.
 
 The **menu** (the button at the top right, on every screen size) opens a full-screen list of the sections. On wide screens, **ticks** at the
-left edge show where you are (they appear after the hero); hovering them reveals the section names.
+right edge show where you are (they appear after the hero); hovering them reveals the section names.
 
 ### Loading curtain and entrance (`src/curtain.js`, `src/sections.css`)
 
@@ -59,18 +62,20 @@ rises and fades (1 s), the curtain fades (0.45 s) and `is-loaded` goes on `<html
   another (0.45 s each); the hero headline's words rise a long way while skewing flat (1.6 s, a line at a time); then the eyebrow, buttons, stepper and scroll cue fade up.
 - **Header:** once the page is scrolled, the full wordmark fades down and only the small mark stays (as the example swaps its logo); it returns at the top.
 - **Pointer ring:** over the hero it says "Scroll" until you have scrolled.
-- **Rings, glows and the two videos** fade in (and the videos settle from a touch smaller) as they arrive; the ticks slide in from the left.
+- **The ticks** slide in from the right.
 
-### How the lower page moves (`src/motion.js`, `src/video.js`, `src/sections.css`)
+### How the lower page moves (`src/page.js`, `src/page.css`, `src/motion.js`, `src/video.js`)
 
-- **Line-by-line text:** each heading and paragraph is split into words, each word is given its line number, and when the block scrolls into
-  view the lines rise 3 vw and fade in one after another (0.9 s, easing `cubic-bezier(.33,1,.68,1)`, 0.15 s between title lines). The line
-  numbers are re-measured when the window is resized. Numbered rows, services and groups rise in as they arrive.
-- **Parallax:** the two videos drift slowly against the scroll, in whole pixels only (a picture resting on a fraction of a pixel is resampled by the browser and looks soft).
-- **The pointer ring** (fine pointers only) follows the mouse, swells over links and carries a "View" label over the "who we work for" list.
-- **Nothing is left hidden:** once scrolling stops, any text, row or picture at or above the bottom of the screen is shown, however it got there (a jump from
-  the menu, a fast fling, a resize), so a reveal that was missed cannot leave text out of sight.
-- All of it is transform or opacity. With reduced motion nothing is split or animated and the content is simply there.
+GSAP + ScrollTrigger do the scroll-linked work (pins, scrubs), Lenis supplies the smooth scroll and its velocity, Motion (lazy) does the springs.
+
+- **Pins first.** The three pinned sections are created before anything else (every trigger made after a pin measures its position with the pin's spacing in it), then the rest in page order.
+- **Headlines** rise word by word out of masks as they arrive; **kickers and labels decode** (their letters start as noise and settle left to right); paragraphs and lists fade up.
+- **The air:** three soft lights drift behind the page at different speeds and lean away from the pointer; a grain tile; a progress line at the top.
+- **Camera feel:** headlines skew a little with the scroll speed, and the marquee runs faster, runs backwards when you scroll back, and leans into the speed (all from Lenis's velocity).
+- **Cards' little drawings** (SVG with CSS animation, one accent of pink) run only while their card is the active one.
+- **Reduced motion:** nothing in `page.js` runs; the page is laid out as a plain vertical stack (the services in two columns), with the drawings still.
+- **Phones and tablets (under 901 px):** no horizontal pin; the service cards stack and come up out of the dark; the footage window opens in a portrait frame and uses the tall file.
+- Development: `?y=7000` jumps to that scroll position once the page is up (dev server only); `window.__gss` exposes Lenis, GSAP and ScrollTrigger.
 
 ## The hero scene
 
@@ -154,17 +159,17 @@ mid-visit the poster comes back until it recovers.
   `ffmpeg -y -i .snaps/poster-land.png -c:v libwebp -quality 86 -compression_level 6 public/poster.webp` (and the same for `poster-tall.webp`).
   Needs ffmpeg (winget package `Gyan.FFmpeg`). The posters are drawn by the scene itself, so the live scene fades in over an identical frame.
 - **Videos for the lower sections** (`public/video`, played by `src/video.js`) come from a supplied clip of the armed response vehicle (1280 × 720, 24 fps, 10 s, with sound; the sound is dropped).
-  `bash tools/encode-videos.sh "path/to/clip.mp4"` (needs ffmpeg; use Git Bash on Windows) makes all eight files: `vehicle-1` (the first 5 s, for the tall "Our approach" panel) and
-  `vehicle-2` (the last 5 s, for the wide closing band), each with a lighter `-sm` file and a `.webp` poster (its first frame). Each half plays forwards then backwards, so the loop has no cut.
-  - **Why they are sharp.** The page shows the clip in a tall panel and a wide band, so a browser has to crop the 16:9 frame to that shape and then enlarge it (1.1× to 1.4× on a normal
+  `bash tools/encode-videos.sh "path/to/clip.mp4"` (needs ffmpeg; use Git Bash on Windows) makes all eight files: `vehicle-1` (the first 5 s, on the middle "Our approach" card, cropped tall) and
+  `vehicle-2` (the last 5 s, full screen in "Armed response": the whole frame, and a tall crop for phones), each with a lighter `-sm` file and a `.webp` poster (its first frame). Each half plays forwards then backwards, so the loop has no cut.
+  - **Why they are sharp.** The page shows the clip on a card and full screen, so a browser has to crop the 16:9 frame to that shape and then enlarge it (1.1× to 1.4× on a normal
     screen, more on a high-density one) with a soft bilinear filter. That, plus compressing to a quarter of the original bitrate and enlarging a 640 px phone version about three times,
     is what made the first version look blurry. The script instead crops to the shape the picture is shown in, lightly removes the generated footage's shimmer (`hqdn3d`), enlarges with Lanczos
     and a little contrast-adaptive sharpening (`cas`), and encodes at CRF 22 (24 for the lighter files). The source's colour tags are kept, so the colours match the original.
-  - **Sizes:** `vehicle-1` 960 × 1104 (2.1 MB), `vehicle-1-sm` 720 × 828 (1.0 MB), `vehicle-2` 1600 × 694 (3.2 MB), `vehicle-2-sm` 720 × 496 (0.9 MB).
+  - **Sizes:** `vehicle-1` 960 × 1104 (2.1 MB), `vehicle-1-sm` 720 × 828 (1.0 MB), `vehicle-2` 1600 × 900 (3.7 MB), `vehicle-2-sm` 720 × 1200, a tall crop (1.2 MB).
     `video.js` picks the file by how many real pixels the picture needs (its width on the page × the screen's pixel density, up to 2): over 800 it takes the full file, otherwise the lighter one.
   - **Limits:** the real detail cannot exceed the 1280 × 720 source. For a truly crisp result export the clip from the generator at 1080p or 4K and run the script again (it adapts to the source size).
-    The framing and quality knobs (`PHIL_X`, `CLOSE_Y`, `CAS`, `DENOISE`, `CRF`, `CRF_SM`) are listed at the top of the script.
-  - The round pictures in "Who we work for" (`public/img/armed-*.webp`) are 720 × 720 stills of the vehicle clip.
+    The framing and quality knobs (`PHIL_X`, `PHONE_X`, `CAS`, `DENOISE`, `CRF`, `CRF_SM`) are listed at the top of the script.
+  - The pictures that follow the pointer in "Who we work for" (`public/img/armed-*.webp`) are 720 × 720 stills of the vehicle clip.
   - To add a video, put `<video muted loop playsinline preload="none" data-poster="…" data-poster-sm="…" data-src="…" data-src-sm="…">` in a section; `video.js` does the rest.
 - Pictures from the 3D scene from a camera of your own: `__scene.snapCam('name.png', { pos: [x, y, z], look: [x, y, z], fov }, width, height)` (station *i* is at x = *i* × 16: camera 0, gate motor 16, beam posts 32, monitors 48), writing to `.snaps/`.
 - Handy in the browser console: `__gss.hero.scene` (the scene), `__gss.lenis.stop()` before testing so a stray wheel event does not move the page.
@@ -204,7 +209,7 @@ mid-visit the poster comes back until it recovers.
 
 ## Folders
 
-`src/` page code (`scene/` is the 3D hero; `sections.css`, `motion.js` and `video.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) · `tools/` `encode-videos.sh`, which makes the page's videos and posters from the source clip ·
+`src/` page code (`scene/` is the 3D hero; `page.css`, `page.js`, `sections.css` (header, menu, ticks, curtain), `motion.js` and `video.js` are the lower page) · `public/` logo, favicon, posters, `video/` (the lower-section videos and their posters) and `img/` (stills of the vehicle clip) · `scripts/` logo generator (and the frame generator for the archived clip hero) · `tools/` `encode-videos.sh`, which makes the page's videos and posters from the source clip ·
 `dev3d.html` the scene on its own, for development (not in the build) ·
 `ai-brief/` the prompts and the clip an earlier version was built from ·
 `archive/` earlier versions, none in the build: `clip-scrub-hero/` (the footage hero scrubbed by scroll: its `film.js` and `sequence.js`, and the frames),

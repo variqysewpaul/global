@@ -14,7 +14,7 @@ import { getMotion } from './spring.js';
 
 // Scroll progress (0-1 down the pinned hero) at which the camera is at the opening shot and at each station. The camera is
 // still moving between them; the last station is held to the end, so its copy has time to be read before the page moves on.
-const STOPS = [0, 0.22, 0.45, 0.68, 0.9];
+const STOPS = [0, 0.18, 0.36, 0.54, 0.72, 0.9];
 const NEAR = 0.42; // a chapter's copy is on screen within this share of the distance to the neighbouring station
 
 // scroll progress -> chapter time for the scene (0 opening shot, 1 CCTV, 2 gates, 3 beams, 4 control room)
@@ -141,6 +141,9 @@ export function initHero3D({ reduced, lenis }) {
   const tl = gsap.timeline({ defaults: { ease: 'none' } });
   tl.fromTo(intro, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -24, duration: 0.03, ease: 'power1.in', immediateRender: false }, 0.1);
   tl.fromTo('.scroll-cue', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.03, immediateRender: false }, 0.01);
+  // the last station is a push through the middle monitor (the scene whites out as the camera goes in); as it ends, the picture falls
+  // away into the dark page behind it
+  tl.fromTo('.hero__veil', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.08, ease: 'power1.in', immediateRender: false }, 0.915);
   tl.set({}, {}, 1);
 
   // the scene smooths the camera itself, so the scroll drives it directly (no second layer of lag)

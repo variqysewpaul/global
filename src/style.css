@@ -278,7 +278,7 @@ main {
 }
 .hero {
   position: relative;
-  height: 760vh; /* about 1.5 screens of scrolling between one product and the next, and a hold on the last */
+  height: 840vh; /* about 1.5 screens of scrolling between one product and the next, the push through the monitor, and a hold */
   background: var(--ink);
 }
 .hero__pin {
@@ -456,6 +456,16 @@ main {
   border-color: var(--pink-hi);
   transform: scale(1.2);
 }
+/* at the very end the picture falls away into the page behind it (scrubbed, see hero3d.js) */
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 .scroll-cue {
   position: absolute;
   left: var(--gutter);
@@ -546,7 +556,7 @@ main {
 /* ---------------------------------------------------------------- responsive */
 @media (max-width: 800px) {
   .hero {
-    height: 620vh;
+    height: 680vh;
   }
   .hero__copy {
     justify-content: flex-end;

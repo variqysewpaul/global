@@ -71,6 +71,10 @@
 
     <a class="skip" href="#intro">Skip the intro animation</a>
 
+    <!-- the air behind the page: soft light that drifts as you scroll, and the scroll progress line -->
+    <div class="atmos" aria-hidden="true"><i class="orb orb--a"></i><i class="orb orb--b"></i><i class="orb orb--c"></i></div>
+    <div class="progress" aria-hidden="true"><i></i></div>
+
     <!-- shared logo mark + icon set -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
       <defs>
@@ -146,12 +150,13 @@
     <div class="menu" id="menu" inert>
       <div class="menu__glow" aria-hidden="true"></div>
       <nav class="menu__nav" aria-label="Menu">
-        <a href="#hero">Home</a>
-        <a href="#philosophy">Our approach</a>
-        <a href="#services">Services</a>
-        <a href="#groups">Who we work for</a>
-        <a href="#about">About us</a>
-        <a href="#contact">Contact</a>
+        <a href="#hero"><i>00</i><span>Home</span></a>
+        <a href="#philosophy"><i>02</i><span>Our approach</span></a>
+        <a href="#services"><i>03</i><span>Services</span></a>
+        <a href="#response"><i>04</i><span>Armed response</span></a>
+        <a href="#groups"><i>05</i><span>Who we work for</span></a>
+        <a href="#about"><i>06</i><span>About us</span></a>
+        <a href="#contact"><i>07</i><span>Contact</span></a>
       </nav>
       <p class="menu__foot text"><a href="mailto:globalsecurity@telkomsa.net">globalsecurity@telkomsa.net</a><span aria-hidden="true">|</span><a href="tel:+27343154237">034 315 4237</a></p>
     </div>
@@ -162,6 +167,7 @@
         <li><a href="#intro"><span class="line"></span><span class="label">Intro</span></a></li>
         <li><a href="#philosophy"><span class="line"></span><span class="label">Our approach</span></a></li>
         <li><a href="#services"><span class="line"></span><span class="label">Services</span></a></li>
+        <li><a href="#response"><span class="line"></span><span class="label">Armed response</span></a></li>
         <li><a href="#groups"><span class="line"></span><span class="label">Who we work for</span></a></li>
         <li><a href="#about"><span class="line"></span><span class="label">About us</span></a></li>
         <li><a href="#contact"><span class="line"></span><span class="label">Contact</span></a></li>
@@ -254,229 +260,316 @@
             of control-room monitors showing camera feeds.
           </p>
           <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+          <div class="hero__veil" aria-hidden="true"></div>
         </div>
       </section>
 
-      <!-- ============================== INTRO ============================== -->
-      <section id="intro" class="blk intro" tabindex="-1" aria-labelledby="intro-title">
-        <h2 id="intro-title" class="sr-only">Global Security Solutions</h2>
-        <div class="intro__cols">
-          <div class="text bigger" data-lines>
-            <p>
-              At Global Security Solutions we believe real security goes further than hardware. It is knowing that someone is watching,
-              and that someone is on the way. We supply and install alarm systems, gate automation, CCTV and security hardware for homes
-              and businesses in Newcastle and the Amajuba District, and back them with a 24-hour control room and armed response.
+      <!-- ============================== 01 · STATEMENT: the words come into focus as you scroll ============================== -->
+      <section id="intro" class="sec statement" tabindex="-1" aria-labelledby="intro-title">
+        <div class="statement__pin">
+          <div class="wrap">
+            <h2 id="intro-title" class="sr-only">Global Security Solutions</h2>
+            <p class="kicker" data-reveal><span>01</span>Global Security Solutions</p>
+            <p class="statement__text" data-focus>
+              At Global Security Solutions we believe real security goes further than hardware. It is knowing that <em>someone is watching,</em> and that <em>someone is on the way.</em>
             </p>
-          </div>
-          <div class="text" data-lines>
-            <p>
-              Every alarm, panic button and sensor trigger reaches our control room, which operates around the clock. An operator checks
-              the signal and, when a response is needed, armed response vehicles are dispatched, day or night, weekends and public
-              holidays included.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================== OUR APPROACH ============================== -->
-      <section id="philosophy" class="blk phil" tabindex="-1" aria-labelledby="phil-title">
-        <div class="phil__left">
-          <div class="phil__inner">
-            <h2 id="phil-title" class="t-normal" data-lines>Our approach</h2>
-            <div class="text bigger" data-lines>
-              <p>
-                Every property is different. We start with a conversation and a site visit to understand what you need to protect, then
-                design the system around it. Our technicians supply, install and maintain it, and our control room and armed response
-                stand behind it, around the clock.
+            <div class="statement__after">
+              <p class="lead">
+                We supply and install alarm systems, gate automation, CCTV and security hardware for homes and businesses in Newcastle and the Amajuba District, and back them with a 24-hour control room and armed response.
+              </p>
+              <p class="lead">
+                Every alarm, panic button and sensor trigger reaches our control room, which operates around the clock. An operator checks the signal and, when a response is needed, armed response vehicles are dispatched, day or night, weekends and public holidays included.
               </p>
             </div>
-            <ol class="list">
-              <li class="listItem" style="--i: 0">
-                <span class="number text" aria-hidden="true">01</span>
-                <div>
-                  <h3 class="text bigger name">Always on</h3>
-                  <p class="text">A control room that operates around the clock, weekends and public holidays included.</p>
-                </div>
-              </li>
-              <li class="listItem" style="--i: 1">
-                <span class="number text" aria-hidden="true">02</span>
-                <div>
-                  <h3 class="text bigger name">Always on the way</h3>
-                  <p class="text">Armed response vehicles dispatched day or night, whenever a response is needed.</p>
-                </div>
-              </li>
-              <li class="listItem" style="--i: 2">
-                <span class="number text" aria-hidden="true">03</span>
-                <div>
-                  <h3 class="text bigger name">Done properly</h3>
-                  <p class="text">Supplied, installed and maintained by our technicians.</p>
-                </div>
-              </li>
-            </ol>
           </div>
-        </div>
-        <div class="phil__right" aria-hidden="true">
-          <div class="phil__ring" data-fade></div>
-          <div class="phil__media" data-fade><video class="vid" muted loop playsinline preload="none" data-poster="/video/vehicle-1.webp" data-poster-sm="/video/vehicle-1-sm.webp" data-src="/video/vehicle-1.mp4" data-src-sm="/video/vehicle-1-sm.mp4" width="960" height="1104" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback></video></div>
         </div>
       </section>
 
-      <!-- ============================== SERVICES ============================== -->
-      <section id="services" class="blk services" tabindex="-1" aria-labelledby="services-title">
-        <div class="services__glow" aria-hidden="true" data-fade></div>
+      <!-- ============================== 02 · OUR APPROACH: three cards stack up in depth ============================== -->
+      <section id="philosophy" class="sec approach" tabindex="-1" aria-labelledby="phil-title">
+        <div class="wrap approach__grid">
+          <div class="approach__side">
+            <p class="kicker" data-reveal><span>02</span>Our approach</p>
+            <h2 id="phil-title" class="h2" data-split>Our <em>approach</em></h2>
+            <p class="lead" data-reveal>
+              Every property is different. We start with a conversation and a site visit to understand what you need to protect, then design the system around it. Our technicians supply, install and maintain it, and our control room and armed response stand behind it, around the clock.
+            </p>
+          </div>
+          <ol class="stack">
+            <li class="card card--rings" style="--i: 0">
+              <svg class="card__art" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+                <g class="rings">
+                  <circle cx="120" cy="120" r="30" /><circle cx="120" cy="120" r="30" /><circle cx="120" cy="120" r="30" />
+                </g>
+                <circle class="dial" cx="120" cy="120" r="92" />
+                <circle class="hub" cx="120" cy="120" r="9" />
+              </svg>
+              <span class="card__n" aria-hidden="true">01</span>
+              <div class="card__body">
+                <h3 class="card__t">Always on</h3>
+                <p class="card__p">A control room that operates around the clock, weekends and public holidays included.</p>
+              </div>
+            </li>
+            <li class="card card--road" style="--i: 1">
+              <div class="card__video" aria-hidden="true">
+                <video class="vid" muted loop playsinline preload="none" data-poster="/video/vehicle-1.webp" data-poster-sm="/video/vehicle-1-sm.webp" data-src="/video/vehicle-1.mp4" data-src-sm="/video/vehicle-1-sm.mp4" width="960" height="1104" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback></video>
+              </div>
+              <span class="card__n" aria-hidden="true">02</span>
+              <div class="card__body">
+                <h3 class="card__t">Always on the way</h3>
+                <p class="card__p">Armed response vehicles dispatched day or night, whenever a response is needed.</p>
+              </div>
+            </li>
+            <li class="card card--plan" style="--i: 2">
+              <svg class="card__art" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+                <g class="grid"><path d="M0 60H240M0 120H240M0 180H240M60 0V240M120 0V240M180 0V240" /></g>
+                <path class="tick" d="M62 124l38 38 78-86" />
+              </svg>
+              <span class="card__n" aria-hidden="true">03</span>
+              <div class="card__body">
+                <h3 class="card__t">Done properly</h3>
+                <p class="card__p">Supplied, installed and maintained by our technicians.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============================== 03 · SERVICES: a camera tracks along six cards ============================== -->
+      <section id="services" class="sec services" tabindex="-1" aria-labelledby="services-title">
+        <div class="services__pin">
+          <div class="wrap services__head">
+            <div>
+              <p class="kicker" data-reveal><span>03</span>What we do</p>
+              <h2 id="services-title" class="h2" data-split>Our <em>services</em></h2>
+            </div>
+            <p class="lead" data-reveal>
+              We supply, install, maintain and integrate the systems that protect a property, and back them with a control room and armed response. Our services include:
+            </p>
+          </div>
+          <ul class="services__track">
+            <li class="scard" style="--i: 0">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <g class="m-line"><rect x="24" y="38" width="38" height="44" rx="9" /><path d="M43 94v14M30 108h26" /></g>
+                <circle class="m-dot" cx="43" cy="60" r="6" />
+                <g class="m-waves"><path class="w1" d="M75.8 37A40 40 0 0 1 75.8 83" /><path class="w2" d="M93.8 24.4A62 62 0 0 1 93.8 95.6" /><path class="w3" d="M111.8 11.8A84 84 0 0 1 111.8 108.2" /></g>
+                <g class="m-line m-target"><circle cx="188" cy="60" r="22" stroke-dasharray="3 6" /><path d="M188 28v10M188 82v10M156 60h10M210 60h10" /></g>
+                <circle class="m-dot m-blink" cx="188" cy="60" r="4" />
+              </svg>
+              <span class="scard__n" aria-hidden="true">01</span>
+              <h3 class="scard__t">Alarm systems &amp; intruder detection</h3>
+              <p class="scard__p">Alarm systems for homes and businesses, supplied and installed by our technicians.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Alarm%20system" data-interest="Alarm system" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about alarm systems</span></a>
+            </li>
+            <li class="scard" style="--i: 1">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <path class="m-line" d="M16 114H224" />
+                <rect class="m-line" x="20" y="64" width="30" height="48" rx="6" />
+                <circle class="m-dot" cx="35" cy="82" r="4" />
+                <g class="m-gate m-line"><rect x="62" y="56" width="104" height="56" rx="4" /><path d="M80 56v56M98 56v56M116 56v56M134 56v56M152 56v56" /></g>
+                <rect class="m-line" x="198" y="50" width="10" height="64" rx="3" />
+                <path class="m-line m-arrow" d="M70 34h60m-8-8 8 8-8 8" />
+              </svg>
+              <span class="scard__n" aria-hidden="true">02</span>
+              <h3 class="scard__t">Gate &amp; access automation</h3>
+              <p class="scard__p">Gate motor installation, gate automation and physical barrier access control.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Gate%20automation" data-interest="Gate automation" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about gate automation</span></a>
+            </li>
+            <li class="scard" style="--i: 2">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <g class="m-line"><circle cx="120" cy="75" r="52" /><circle cx="120" cy="75" r="38" /><circle cx="120" cy="75" r="24" /><circle class="m-spin" cx="120" cy="75" r="62" stroke-dasharray="2 9" /></g>
+                <circle class="m-fill" cx="120" cy="75" r="11" />
+                <path class="m-scan" d="M72 75h96" />
+                <path class="m-line" d="M20 30V16h14M220 30V16h-14M20 120v14h14M220 120v14h-14" />
+                <circle class="m-dot m-blink" cx="206" cy="30" r="4" />
+              </svg>
+              <span class="scard__n" aria-hidden="true">03</span>
+              <h3 class="scard__t">CCTV &amp; surveillance</h3>
+              <p class="scard__p">Closed-circuit television systems and surveillance hardware for homes, shops and sites.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20CCTV" data-interest="CCTV" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about CCTV</span></a>
+            </li>
+            <li class="scard" style="--i: 3">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <g class="m-line"><rect x="26" y="14" width="88" height="122" rx="12" /><rect x="40" y="28" width="60" height="20" rx="4" /></g>
+                <g class="m-keys"><circle class="k1" cx="52" cy="72" r="7" /><circle class="k2" cx="70" cy="72" r="7" /><circle class="k3" cx="88" cy="72" r="7" /><circle class="k4" cx="52" cy="92" r="7" /><circle class="k5" cx="70" cy="92" r="7" /><circle class="k6" cx="88" cy="92" r="7" /><circle class="k7" cx="52" cy="112" r="7" /><circle class="k8" cx="70" cy="112" r="7" /><circle class="k9" cx="88" cy="112" r="7" /></g>
+                <g class="m-line"><path d="M114 38H150V70H190" /><path d="M114 76H136V108H206" /><rect x="176" y="58" width="40" height="26" rx="4" /></g>
+                <circle class="m-dot m-blink" cx="196" cy="108" r="4" />
+              </svg>
+              <span class="scard__n" aria-hidden="true">04</span>
+              <h3 class="scard__t">Security hardware &amp; equipment</h3>
+              <p class="scard__p">Specialised security equipment and replacement parts, retail and direct.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Security%20hardware%20%2F%20parts" data-interest="Security hardware / parts" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about security hardware</span></a>
+            </li>
+            <li class="scard" style="--i: 4">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <g class="m-line"><rect x="16" y="14" width="64" height="40" rx="5" /><rect x="88" y="14" width="64" height="40" rx="5" /><rect x="160" y="14" width="64" height="40" rx="5" /><rect x="16" y="62" width="64" height="40" rx="5" /><rect class="m-hot" x="88" y="62" width="64" height="40" rx="5" /></g>
+                <g class="m-wave"><path d="M24 36l9-10 9 14 9-12 9 8" /><path d="M96 38l9-8 9 10 9-12 9 10" /><path d="M168 34l9 8 9-14 9 12 9-6" /><path d="M24 84l9 8 9-14 9 10 9-8" /></g>
+                <rect class="m-box" x="104" y="72" width="22" height="18" rx="2" />
+                <g class="m-line"><circle cx="190" cy="82" r="22" /><circle class="m-clock" cx="190" cy="82" r="22" /></g>
+                <text class="m-24" x="190" y="87" text-anchor="middle">24</text>
+                <path class="m-line" d="M16 118H224" /><path class="m-line m-ticks" d="M16 130H224" />
+              </svg>
+              <span class="scard__n" aria-hidden="true">05</span>
+              <h3 class="scard__t">24-hour control room</h3>
+              <p class="scard__p">Alarms, cameras and sensors report to a control room that operates around the clock.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Armed%20response" data-interest="Armed response" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about the control room</span></a>
+            </li>
+            <li class="scard" style="--i: 5">
+              <svg class="motif" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+                <path class="m-route" d="M28 112C70 112 74 52 118 62S170 112 208 44" />
+                <circle class="m-line" cx="28" cy="112" r="9" />
+                <circle class="m-dot" cx="28" cy="112" r="3" />
+                <circle class="m-ping" cx="208" cy="44" r="6" />
+                <circle class="m-dot" cx="208" cy="44" r="6" />
+                <circle class="m-car" r="5"><animateMotion dur="4.2s" repeatCount="indefinite" path="M28 112C70 112 74 52 118 62S170 112 208 44" /></circle>
+              </svg>
+              <span class="scard__n" aria-hidden="true">06</span>
+              <h3 class="scard__t">Armed response</h3>
+              <p class="scard__p">Armed response vehicles dispatched day and night, weekends and public holidays included.</p>
+              <a class="scard__cta" href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Armed%20response" data-interest="Armed response" data-mail>Enquire <span aria-hidden="true">→</span><span class="sr-only"> about armed response</span></a>
+            </li>
+          </ul>
+          <div class="services__foot wrap" aria-hidden="true">
+            <b class="services__count"><i>01</i> / 06</b>
+            <span class="services__bar"><i></i></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== 04 · ARMED RESPONSE: a window opens onto the footage ============================== -->
+      <section id="response" class="sec theater" tabindex="-1" aria-labelledby="response-title">
+        <div class="theater__stage">
+          <div class="theater__frame" aria-hidden="true">
+            <video class="vid" muted loop playsinline preload="none" data-poster="/video/vehicle-2.webp" data-poster-sm="/video/vehicle-2-sm.webp" data-src="/video/vehicle-2.mp4" data-src-sm="/video/vehicle-2-sm.mp4" width="1600" height="900" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback></video>
+            <div class="theater__shade"></div>
+            <div class="hud">
+              <i class="hud__c hud__c--tl"></i><i class="hud__c hud__c--tr"></i><i class="hud__c hud__c--bl"></i><i class="hud__c hud__c--br"></i>
+              <span class="hud__l hud__l--tl"><i class="hud__rec"></i>Armed response</span>
+              <span class="hud__l hud__l--tr" id="hud-time">00:00:00</span>
+              <span class="hud__l hud__l--bl">Newcastle · KwaZulu-Natal</span>
+              <span class="hud__l hud__l--br">24 hours · 7 days</span>
+            </div>
+          </div>
+          <div class="wrap theater__copy">
+            <p class="kicker" data-reveal><span>04</span>Armed response</p>
+            <h2 id="response-title" class="h1" data-split>Always on <em>the way.</em></h2>
+            <p class="lead">Armed response vehicles dispatched day or night, weekends and public holidays included.</p>
+            <a class="btn btn--pink" href="tel:+27343154237">Call 034 315 4237</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== 05 · WHO WE WORK FOR ============================== -->
+      <section id="groups" class="sec clients" tabindex="-1" aria-labelledby="groups-title">
         <div class="wrap">
-          <div class="services__head">
-            <h2 id="services-title" class="t-normal" data-lines>Our services</h2>
-            <div class="text bigger" data-lines>
-              <p>
-                We supply, install, maintain and integrate the systems that protect a property, and back them with a control room and
-                armed response. Our services include:
-              </p>
+          <div class="clients__head">
+            <div>
+              <p class="kicker" data-reveal><span>05</span>Who we work for</p>
+              <h2 id="groups-title" class="h2" data-split>Who we <em>work for</em></h2>
             </div>
+            <p class="lead" data-reveal>
+              Our clients are homes, businesses and sites that need security they can rely on: systems that work every time, and a control room and armed response behind them.
+            </p>
           </div>
-          <ul class="services__grid">
-            <li class="service" style="--i: 0">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Alarm%20system" data-interest="Alarm system" data-mail>
-                <span class="number text" aria-hidden="true">01</span>
-                <span class="text name">Alarm systems &amp; intruder detection</span>
-                <span class="text desc">Alarm systems for homes and businesses, supplied and installed by our technicians.</span>
-              </a>
+          <ul class="clients__list" data-cursor="View">
+            <li class="client" data-i="0">
+              <span class="client__n" aria-hidden="true">01</span>
+              <h3 class="client__t">Homes and families</h3>
+              <p class="client__p">Alarms, gates and CCTV for residential properties.</p>
+              <i class="client__arrow" aria-hidden="true">↗</i>
             </li>
-            <li class="service" style="--i: 1">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Gate%20automation" data-interest="Gate automation" data-mail>
-                <span class="number text" aria-hidden="true">02</span>
-                <span class="text name">Gate &amp; access automation</span>
-                <span class="text desc">Gate motor installation, gate automation and physical barrier access control.</span>
-              </a>
+            <li class="client" data-i="1">
+              <span class="client__n" aria-hidden="true">02</span>
+              <h3 class="client__t">Businesses</h3>
+              <p class="client__p">Commercial alarm systems, access control and surveillance for shops, offices and sites.</p>
+              <i class="client__arrow" aria-hidden="true">↗</i>
             </li>
-            <li class="service" style="--i: 0">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20CCTV" data-interest="CCTV" data-mail>
-                <span class="number text" aria-hidden="true">03</span>
-                <span class="text name">CCTV &amp; surveillance</span>
-                <span class="text desc">Closed-circuit television systems and surveillance hardware for homes, shops and sites.</span>
-              </a>
-            </li>
-            <li class="service" style="--i: 1">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Security%20hardware%20%2F%20parts" data-interest="Security hardware / parts" data-mail>
-                <span class="number text" aria-hidden="true">04</span>
-                <span class="text name">Security hardware &amp; equipment</span>
-                <span class="text desc">Specialised security equipment and replacement parts, retail and direct.</span>
-              </a>
-            </li>
-            <li class="service" style="--i: 0">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Armed%20response" data-interest="Armed response" data-mail>
-                <span class="number text" aria-hidden="true">05</span>
-                <span class="text name">24-hour control room</span>
-                <span class="text desc">Alarms, cameras and sensors report to a control room that operates around the clock.</span>
-              </a>
-            </li>
-            <li class="service" style="--i: 1">
-              <a href="mailto:globalsecurity@telkomsa.net?subject=Website%20enquiry%20%E2%80%94%20Armed%20response" data-interest="Armed response" data-mail>
-                <span class="number text" aria-hidden="true">06</span>
-                <span class="text name">Armed response</span>
-                <span class="text desc">Armed response vehicles dispatched day and night, weekends and public holidays included.</span>
-              </a>
+            <li class="client" data-i="2">
+              <span class="client__n" aria-hidden="true">03</span>
+              <h3 class="client__t">Complexes and commercial sites</h3>
+              <p class="client__p">Gate automation and physical access control for driveways, complexes and commercial sites.</p>
+              <i class="client__arrow" aria-hidden="true">↗</i>
             </li>
           </ul>
         </div>
-      </section>
-
-      <!-- ============================== WHO WE WORK FOR ============================== -->
-      <section id="groups" class="blk groups" tabindex="-1" aria-labelledby="groups-title">
-        <div class="groups__cols">
-          <div class="groups__intro">
-            <h2 id="groups-title" class="t-menu" data-lines>Who we work for</h2>
-            <div class="text bigger" data-lines>
-              <p>
-                Our clients are homes, businesses and sites that need security they can rely on: systems that work every time, and a
-                control room and armed response behind them.
-              </p>
-              <p>
-                We are based in Newcastle Central and cover Newcastle and the surrounding Amajuba District, with client deployments
-                reaching further across KwaZulu-Natal. Our control room and armed response are available 24 hours a day.
-              </p>
-            </div>
-          </div>
-          <ul class="group-list" data-cursor="View">
-            <li class="group" style="--i: 0">
-              <span class="number text" aria-hidden="true">01</span>
-              <div class="groupTitle">
-                <h3 class="text bigger name">Homes and families</h3>
-                <p class="text">Alarms, gates and CCTV for residential properties.</p>
-              </div>
-              <span class="imageContainer" aria-hidden="true"><img class="imageWrapper" src="/img/armed-front.webp" alt="" width="900" height="900" loading="lazy" decoding="async" /></span>
-            </li>
-            <li class="group" style="--i: 1">
-              <span class="number text" aria-hidden="true">02</span>
-              <div class="groupTitle">
-                <h3 class="text bigger name">Businesses</h3>
-                <p class="text">Commercial alarm systems, access control and surveillance for shops, offices and sites.</p>
-              </div>
-              <span class="imageContainer" aria-hidden="true"><img class="imageWrapper" src="/img/armed-side.webp" alt="" width="900" height="900" loading="lazy" decoding="async" /></span>
-            </li>
-            <li class="group" style="--i: 2">
-              <span class="number text" aria-hidden="true">03</span>
-              <div class="groupTitle">
-                <h3 class="text bigger name">Complexes and commercial sites</h3>
-                <p class="text">Gate automation and physical access control for driveways, complexes and commercial sites.</p>
-              </div>
-              <span class="imageContainer" aria-hidden="true"><img class="imageWrapper" src="/img/armed-rear.webp" alt="" width="900" height="900" loading="lazy" decoding="async" /></span>
-            </li>
-          </ul>
+        <div class="preview" aria-hidden="true">
+          <img src="/img/armed-front.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+          <img src="/img/armed-side.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+          <img src="/img/armed-rear.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
         </div>
       </section>
 
-      <!-- ============================== ABOUT US ============================== -->
-      <section id="about" class="blk about" tabindex="-1" aria-labelledby="about-title">
-        <div class="wrap">
-          <h2 id="about-title" class="t-normal" data-lines>About us</h2>
-          <div class="text bigger about__lead" data-lines>
-            <p>
-              Global Security Solutions is a security installation and services provider based at 89 Scott Street, Newcastle Central. We
-              supply, install and maintain security systems and equipment for homes and businesses across Newcastle and the Amajuba
-              District.
+      <!-- ============================== 06 · ABOUT US + COVERAGE ============================== -->
+      <section id="about" class="sec coverage" tabindex="-1" aria-labelledby="about-title">
+        <div class="wrap coverage__grid">
+          <div class="coverage__text">
+            <p class="kicker" data-reveal><span>06</span>About us</p>
+            <h2 id="about-title" class="h2 h2--md" data-split>Based in <em>Newcastle.</em> On call 24 hours.</h2>
+            <p class="lead lead--big" data-reveal>
+              Global Security Solutions is a security installation and services provider based at 89 Scott Street, Newcastle Central. We supply, install and maintain security systems and equipment for homes and businesses across Newcastle and the Amajuba District.
             </p>
+            <div class="coverage__cols">
+              <p class="lead" data-reveal>
+                Our technicians supply, install, maintain and integrate alarm systems, gate automation, CCTV and security hardware. We also supply specialised equipment and replacement parts, retail or direct, without installation.
+              </p>
+              <p class="lead" data-reveal>
+                Our control room operates 24 hours a day and armed response is available day and night, including weekends and public holidays. We are based in Newcastle Central and cover Newcastle and the surrounding Amajuba District, with client deployments reaching further across KwaZulu-Natal. Call, email or visit us to arrange a quote or a site visit.
+              </p>
+            </div>
           </div>
-          <div class="about__cols">
-            <div class="text" data-lines>
-              <p>
-                Our technicians supply, install, maintain and integrate alarm systems, gate automation, CCTV and security hardware. We
-                also supply specialised equipment and replacement parts, retail or direct, without installation.
-              </p>
-            </div>
-            <div class="text" data-lines>
-              <p>
-                Our control room operates 24 hours a day and armed response is available day and night, including weekends and public
-                holidays. Call, email or visit us to arrange a quote or a site visit.
-              </p>
-            </div>
+          <figure class="radar" aria-hidden="true">
+            <svg viewBox="0 0 600 600" focusable="false">
+              <defs>
+                <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff5fae" stop-opacity="0" /><stop offset="1" stop-color="#ff5fae" stop-opacity="0.55" /></linearGradient>
+                <radialGradient id="glow"><stop offset="0" stop-color="#e0368c" stop-opacity="0.35" /><stop offset="1" stop-color="#e0368c" stop-opacity="0" /></radialGradient>
+              </defs>
+              <circle cx="300" cy="300" r="290" fill="url(#glow)" />
+              <g class="r-rings" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.2">
+                <circle class="r r1" cx="300" cy="300" r="82" /><circle class="r r2" cx="300" cy="300" r="170" /><circle class="r r3" cx="300" cy="300" r="258" />
+              </g>
+              <circle class="r-ticks" cx="300" cy="300" r="276" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="10" stroke-dasharray="1.2 11.4" />
+              <path class="r-axes" d="M300 24V576M24 300H576" stroke="rgba(255,255,255,.1)" />
+              <g class="r-sweep"><path d="M300 300L558 300A258 258 0 0 0 543.4 215.6Z" fill="url(#sweep)" /><path d="M300 300H558" stroke="#ff5fae" stroke-width="1.6" /></g>
+              <g class="r-pings" fill="#ff5fae"><circle class="p p1" cx="372" cy="246" r="4" /><circle class="p p2" cx="214" cy="372" r="4" /><circle class="p p3" cx="438" cy="372" r="4" /><circle class="p p4" cx="190" cy="196" r="4" /><circle class="p p5" cx="318" cy="96" r="4" /></g>
+              <circle class="r-core" cx="300" cy="300" r="7" fill="#fff" />
+              <circle class="r-pulse" cx="300" cy="300" r="7" fill="none" stroke="#ff5fae" stroke-width="2" />
+              <g class="r-labels" font-family="'Inter Variable', Inter, sans-serif" font-weight="600" font-size="13" letter-spacing="2.6" fill="#fff">
+                <text x="318" y="330">NEWCASTLE CENTRAL</text>
+                <text x="300" y="130" text-anchor="middle" fill-opacity=".8">AMAJUBA DISTRICT</text>
+                <text x="300" y="42" text-anchor="middle" fill-opacity=".6">KWAZULU-NATAL</text>
+              </g>
+            </svg>
+          </figure>
+        </div>
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__row">
+            <span>Alarm systems &amp; intruder detection</span><i>✦</i><span>Gate &amp; access automation</span><i>✦</i><span>CCTV &amp; surveillance</span><i>✦</i><span>Security hardware &amp; equipment</span><i>✦</i><span>24-hour control room</span><i>✦</i><span>Armed response</span><i>✦</i>
           </div>
         </div>
-      </section>
-
-      <!-- ============================== CLOSING BAND ============================== -->
-      <section class="blk closing" aria-hidden="true">
-        <div class="closing__media" data-fade><video class="vid" muted loop playsinline preload="none" data-poster="/video/vehicle-2.webp" data-poster-sm="/video/vehicle-2-sm.webp" data-src="/video/vehicle-2.mp4" data-src-sm="/video/vehicle-2-sm.mp4" width="1600" height="694" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback></video></div>
-        <div class="closing__ring" data-fade></div>
       </section>
     </main>
 
-    <!-- ============================== CONTACT ============================== -->
-    <footer id="contact" class="blk footer" tabindex="-1" aria-labelledby="contact-title">
-      <div class="footer__top">
-        <h2 id="contact-title" class="t-medium" data-lines>Contact</h2>
-        <div class="text bigger" data-lines>
-          <p>
-            Want to talk through what your property needs? Contact us today to arrange a quote or a site visit. Call
-            <a href="tel:+27343154237">034&nbsp;315&nbsp;4237</a>, email <a href="mailto:globalsecurity@telkomsa.net" data-mail>globalsecurity@telkomsa.net</a> or visit us at
-            <a href="https://www.google.com/maps/search/?api=1&amp;query=Global+Security+Solutions+89+Scott+Street+Newcastle+2940" target="_blank" rel="noopener">89 Scott Street, Newcastle Central<span class="sr-only"> (opens in a new tab)</span></a>.
-            Our control room is always listening.
+    <!-- ============================== 07 · CONTACT ============================== -->
+    <footer id="contact" class="contact" tabindex="-1" aria-labelledby="contact-title">
+      <div class="wrap contact__inner">
+        <p class="kicker kicker--dark" data-reveal><span>07</span>Contact</p>
+        <h2 id="contact-title" class="contact__title" data-split>Let’s talk <em>security.</em></h2>
+        <a class="contact__phone" href="tel:+27343154237" data-digits aria-label="Call 034 315 4237">034&nbsp;315&nbsp;4237</a>
+        <div class="contact__cols">
+          <p class="lead" data-reveal>
+            Want to talk through what your property needs? Contact us today to arrange a quote or a site visit. Our control room is always listening.
           </p>
+          <ul class="contact__list">
+            <li><span>Call</span><a href="tel:+27343154237">034&nbsp;315&nbsp;4237</a></li>
+            <li><span>Email</span><a href="mailto:globalsecurity@telkomsa.net" data-mail>globalsecurity@telkomsa.net</a></li>
+            <li><span>Visit</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Global+Security+Solutions+89+Scott+Street+Newcastle+2940" target="_blank" rel="noopener">89 Scott Street, Newcastle Central, 2940<span class="sr-only"> (opens in a new tab)</span></a></li>
+            <li><span>Fax</span><b>034&nbsp;315&nbsp;4257</b></li>
+          </ul>
         </div>
       </div>
-      <div class="footer__bar text">
+      <div class="contact__bar">
         <p>© <span id="year">2026</span> Global Security Solutions · 89 Scott Street, Newcastle Central, 2940</p>
-        <p><a href="mailto:globalsecurity@telkomsa.net" data-mail>globalsecurity@telkomsa.net</a><span aria-hidden="true">|</span><a href="tel:+27343154237">034&nbsp;315&nbsp;4237</a><span aria-hidden="true">|</span>Fax&nbsp;034&nbsp;315&nbsp;4257</p>
+        <a href="#hero" class="contact__top">Back to top <span aria-hidden="true">↑</span></a>
       </div>
     </footer>
 

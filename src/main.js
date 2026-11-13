@@ -1,10 +1,10 @@
 import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
+import '@fontsource-variable/geist-mono';
 import '@fontsource/michroma';
-import '@fontsource/poppins/400.css';
-import '@fontsource/poppins/500.css';
 import './style.css';
 import './sections.css';
+import './page.css';
 
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -13,6 +13,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initHero3D } from './hero3d.js';
 import { initUI } from './ui.js';
 import { initMotion } from './motion.js';
+import { initPage } from './page.js';
 import { initVideos } from './video.js';
 import { initCurtain } from './curtain.js';
 
@@ -35,11 +36,23 @@ async function boot() {
 
   hero = initHero3D({ reduced, lenis });
   initUI({ lenis, reduced });
+  initPage({ lenis, reduced }); // (before the ticks: the pinned sections must exist before anything measures the page below them)
   initMotion({ reduced });
   initVideos({ reduced });
 
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
   loaded.then(() => ScrollTrigger.refresh());
+  // development only: ?y=7000 jumps to that scroll position once the page is up (pictures can then be taken without a visible window)
+  if (import.meta.env.DEV) {
+    const y = new URLSearchParams(location.search).get('y');
+    if (y !== null)
+      loaded.then(() => {
+        const go = (d) => (lenis.scrollTo(Number(y) + d, { immediate: true }), ScrollTrigger.update());
+        setTimeout(() => go(0), 400);
+        setTimeout(() => go(1), 2200); // (a second nudge: the first frame after a jump is not always painted)
+        setTimeout(() => go(0), 4200);
+      });
+  }
   window.__gss = { lenis, hero, gsap, ScrollTrigger }; // handy for tuning in the console
 }
 
